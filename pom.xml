@@ -15,6 +15,8 @@
 
 	<properties>
 		<jenkins.version>1.625.3</jenkins.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
 	<name>Windup plugin</name>
