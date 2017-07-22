@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.windup;
 
+import org.jenkinsci.plugins.windup.checking.InputOutputCheck;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -19,16 +20,28 @@ import net.sf.json.JSONObject;
 
 public class WindupBuilder extends Builder {
 
-	@DataBoundConstructor
-	public WindupBuilder() {
+	private final String input;
+	private final String output;
 
+	@DataBoundConstructor
+	public WindupBuilder(String input, String output) {
+		this.input = input;
+		this.output = output;
+	}
+
+	public String getInput() {
+		return input;
+	}
+
+	public String getOutput() {
+		return output;
 	}
 
 	@Override
 	public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
-		final String command = CommandOptions.createCommand(getDescriptor());
+		final String command = CommandOptions.createCommand(this);
 
-		launcher.launch().cmds(command).stdout(listener).join();
+		launcher.launch().cmdAsSingleString(command).stdout(listener).join();
 
 		return true;
 	}
@@ -88,6 +101,14 @@ public class WindupBuilder extends Builder {
 				return FormValidation.error("windup script is not executable.");
 
 			return FormValidation.ok();
+		}
+
+		public FormValidation doCheckInput(@QueryParameter String value) {
+			return InputOutputCheck.checkInput(value);
+		}
+
+		public FormValidation doCheckOutput(@QueryParameter String value) {
+			return InputOutputCheck.checkOutput(value);
 		}
 	}
 }
