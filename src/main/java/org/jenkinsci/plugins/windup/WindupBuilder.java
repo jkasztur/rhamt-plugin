@@ -7,6 +7,9 @@ import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import hudson.Extension;
 import hudson.Launcher;
@@ -22,11 +25,13 @@ public class WindupBuilder extends Builder {
 
 	private final String input;
 	private final String output;
+	private final String altParams;
 
 	@DataBoundConstructor
-	public WindupBuilder(String input, String output) {
+	public WindupBuilder(String input, String output, String altParams) {
 		this.input = input;
 		this.output = output;
+		this.altParams = altParams;
 	}
 
 	public String getInput() {
@@ -37,13 +42,15 @@ public class WindupBuilder extends Builder {
 		return output;
 	}
 
+	public String getAltParams() {
+		return altParams;
+	}
+
 	@Override
 	public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
-		final String command = CommandOptions.createCommand(this);
+		int returnCode = launcher.launch().cmds(CommandOptions.createCommand(this)).stdout(listener).join();
 
-		launcher.launch().cmdAsSingleString(command).stdout(listener).join();
-
-		return true;
+		return returnCode == 0;
 	}
 
 	@Override
@@ -109,6 +116,11 @@ public class WindupBuilder extends Builder {
 
 		public FormValidation doCheckOutput(@QueryParameter String value) {
 			return InputOutputCheck.checkOutput(value);
+		}
+
+		// TODO(jkasztur): check alt params
+		public FormValidation doCheckAltParams(@QueryParameter String value) {
+			return FormValidation.ok();
 		}
 	}
 }

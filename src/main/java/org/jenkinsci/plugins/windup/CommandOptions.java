@@ -1,48 +1,64 @@
 package org.jenkinsci.plugins.windup;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public final class CommandOptions {
 
-	public static String createCommand(WindupBuilder builder) {
+	private static List<String> commandList;
 
-		StringBuilder strBuilder = new StringBuilder();
+	public static List<String> createCommand(WindupBuilder builder) {
 
-		strBuilder.append(getScript(builder));
-		strBuilder.append(getInput(builder));
-		strBuilder.append(getOutput(builder));
+		commandList = new ArrayList<>();
 
-		return strBuilder.toString();
+		addScript(builder);
+		addInput(builder);
+		addOutput(builder);
+		addAltParams(builder);
+
+		return commandList;
 	}
 
-	private static String getScript(WindupBuilder builder) {
-		String script = new File(builder.getDescriptor().getWindupHome(), "bin/windup").getAbsolutePath();
+	private static void addScript(WindupBuilder builder) {
+		File scriptFile = new File(builder.getDescriptor().getWindupHome(), "bin/windup");
+		if (!scriptFile.exists()) {
+			scriptFile = new File(builder.getDescriptor().getWindupHome(), "bin/rhamt-cli");
+		}
+
+		String script = scriptFile.getAbsolutePath();
 		// TODO check if windows
 
-		script += " ";
-		return script;
+		commandList.add(script);
 	}
 
-	private static String getInput(WindupBuilder builder) {
+	private static void addInput(WindupBuilder builder) {
 		String input = builder.getInput();
 		if (input == null || input.trim().equals("")) {
-			return "";
+			return;
 		}
 		String[] inputs = input.split(",");
 
-		StringBuilder strBuilder = new StringBuilder("--input ");
-		for (String s : inputs) {
-			strBuilder.append(s);
-			strBuilder.append(' ');
-		}
-		return strBuilder.toString();
+		commandList.add("--input");
+		commandList.addAll(Arrays.asList(inputs));
 	}
 
-	private static String getOutput(WindupBuilder builder) {
-		if (builder.getOutput() == null || builder.getOutput().trim().equals("")) {
-			return "";
+	private static void addOutput(WindupBuilder builder) {
+		final String output = builder.getOutput();
+		if (output == null || output.trim().equals("")) {
+			return;
 		}
-		final String output = "--output " + builder.getOutput();
-		return output;
+
+		commandList.add("--output");
+		commandList.add(output);
+	}
+
+	private static void addAltParams(WindupBuilder builder) {
+		final String altParams = builder.getAltParams();
+		if (altParams == null || altParams.trim().equals("")) {
+			return;
+		}
+		commandList.addAll(Arrays.asList(altParams.split(" ")));
 	}
 }
