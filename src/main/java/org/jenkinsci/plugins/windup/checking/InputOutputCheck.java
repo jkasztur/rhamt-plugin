@@ -27,7 +27,7 @@ public class InputOutputCheck {
 
 		final File output = new File(value);
 		if (output.exists()) {
-			return FormValidation.warning("Output directory will be overwritten.");
+			return FormValidation.warning("Output directory will be overwritten. (" + output.getAbsolutePath() + ")");
 		}
 
 		return FormValidation.ok();
