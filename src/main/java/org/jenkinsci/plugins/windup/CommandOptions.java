@@ -22,19 +22,17 @@ public final class CommandOptions {
 		addScript(builder);
 		addInput(builder);
 		addOutput(builder);
+		addSource(builder);
+		addTarget(builder);
 		addAltParams(builder);
 
 		return commandList;
 	}
 
 	private static void addScript(WindupBuilder builder) {
-		File scriptFile = new File(builder.getDescriptor().getWindupHome(), "bin/windup");
-		if (!scriptFile.exists()) {
-			scriptFile = new File(builder.getDescriptor().getWindupHome(), "bin/rhamt-cli");
-		}
+		File scriptFile = ScriptOptions.getScriptFile(builder.getDescriptor());
 
 		String script = scriptFile.getAbsolutePath();
-		// TODO check if windows
 
 		commandList.add(script);
 	}
@@ -64,6 +62,24 @@ public final class CommandOptions {
 			// If directory exists, Windup asks if it should overwrite
 			commandList.add("--overwrite");
 		}
+	}
+
+	private static void addSource(WindupBuilder builder) {
+		final String source = builder.getSource();
+		if ("<custom>".equals(source)) {
+			return;
+		}
+		commandList.add("--source");
+		commandList.add(source);
+	}
+
+	private static void addTarget(WindupBuilder builder) {
+		final String target = builder.getTarget();
+		if ("<custom>".equals(target)) {
+			return;
+		}
+		commandList.add("--target");
+		commandList.add(target);
 	}
 
 	private static void addAltParams(WindupBuilder builder) {
