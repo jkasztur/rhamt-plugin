@@ -16,6 +16,7 @@ import hudson.model.BuildListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
+import hudson.util.ListBoxModel;
 import net.sf.json.JSONObject;
 
 public class WindupBuilder extends Builder {
@@ -23,12 +24,16 @@ public class WindupBuilder extends Builder {
 	private final String input;
 	private final String output;
 	private final String altParams;
+	private final String source;
+	private final String target;
 
 	@DataBoundConstructor
-	public WindupBuilder(String input, String output, String altParams) {
+	public WindupBuilder(String input, String output, String altParams, String source, String target) {
 		this.input = input;
 		this.output = output;
 		this.altParams = altParams;
+		this.source = source;
+		this.target = target;
 	}
 
 	public String getInput() {
@@ -41,6 +46,14 @@ public class WindupBuilder extends Builder {
 
 	public String getAltParams() {
 		return altParams;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public String getTarget() {
+		return target;
 	}
 
 	@Override
@@ -87,6 +100,18 @@ public class WindupBuilder extends Builder {
 			windupHome = json.getString("windupHome");
 			save();
 			return true;
+		}
+
+		public ListBoxModel doFillSourceItems() {
+			ListBoxModel list = new ListBoxModel();
+			list.addAll(ScriptOptions.getSourceTechnologies(this));
+			return list;
+		}
+
+		public ListBoxModel doFillTargetItems() {
+			ListBoxModel list = new ListBoxModel();
+			list.addAll(ScriptOptions.getTargetTechnologies(this));
+			return list;
 		}
 
 		public FormValidation doCheckWindupHome(@QueryParameter String value) {

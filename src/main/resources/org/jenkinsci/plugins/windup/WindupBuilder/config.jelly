@@ -7,6 +7,12 @@
 	<f:entry title="Output" field="output">
 		<f:textbox default="windupReport"/>
 	</f:entry>
+	<f:entry title="Source" field="source">
+		<f:select default="Waiting..."/>
+	</f:entry>
+	<f:entry title="Target" field="target">
+		<f:select default="Waiting..."/>
+	</f:entry>
 	<f:entry title="Additional options" field="altParams">
 		<f:textbox/>
 	</f:entry>
