@@ -7,9 +7,6 @@ import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import hudson.Extension;
 import hudson.Launcher;
@@ -48,7 +45,10 @@ public class WindupBuilder extends Builder {
 
 	@Override
 	public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
-		int returnCode = launcher.launch().cmds(CommandOptions.createCommand(this)).stdout(listener).join();
+		int returnCode = launcher.launch()
+				.cmds(CommandOptions.createCommand(this, build.getWorkspace()))
+				.stdout(listener)
+				.join();
 
 		return returnCode == 0;
 	}

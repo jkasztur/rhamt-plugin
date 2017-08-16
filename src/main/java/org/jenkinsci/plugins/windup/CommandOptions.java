@@ -1,17 +1,23 @@
 package org.jenkinsci.plugins.windup;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import hudson.FilePath;
+
 public final class CommandOptions {
 
 	private static List<String> commandList;
+	private static FilePath workspace;
 
-	public static List<String> createCommand(WindupBuilder builder) {
+	public static List<String> createCommand(WindupBuilder builder, FilePath w) throws IOException, InterruptedException {
 
 		commandList = new ArrayList<>();
+		workspace = w;
 
 		addScript(builder);
 		addInput(builder);
@@ -44,14 +50,20 @@ public final class CommandOptions {
 		commandList.addAll(Arrays.asList(inputs));
 	}
 
-	private static void addOutput(WindupBuilder builder) {
+	private static void addOutput(WindupBuilder builder) throws IOException, InterruptedException {
 		final String output = builder.getOutput();
 		if (output == null || output.trim().equals("")) {
 			return;
 		}
 
+		URI outputUri = new FilePath(workspace, output).toURI();
 		commandList.add("--output");
-		commandList.add(output);
+		commandList.add(outputUri.getPath());
+
+		if (new File(outputUri).exists()) {
+			// If directory exists, Windup asks if it should overwrite
+			commandList.add("--overwrite");
+		}
 	}
 
 	private static void addAltParams(WindupBuilder builder) {
