@@ -26,11 +26,6 @@ public class ScriptOptions {
 		}
 	}
 
-	public static File getScriptFile(WindupBuilder.Descriptor descriptor) {
-		setScript(descriptor);
-		return scriptFile;
-	}
-
 	public static List<ListBoxModel.Option> getSourceTechnologies(WindupBuilder.Descriptor descriptor) {
 		return getTechnologies(descriptor, "Source");
 	}
