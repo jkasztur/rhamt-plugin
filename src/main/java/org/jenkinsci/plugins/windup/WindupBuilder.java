@@ -1,5 +1,12 @@
 package org.jenkinsci.plugins.windup;
 
+import org.jboss.forge.furnace.Furnace;
+import org.jboss.forge.furnace.addons.AddonRegistry;
+import org.jboss.forge.furnace.repositories.AddonRepositoryMode;
+import org.jboss.forge.furnace.se.FurnaceFactory;
+import org.jboss.windup.exec.WindupProcessor;
+import org.jboss.windup.exec.configuration.WindupConfiguration;
+
 import org.jenkinsci.plugins.windup.checking.InputOutputCheck;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -7,6 +14,8 @@ import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import hudson.Extension;
 import hudson.Launcher;
@@ -17,8 +26,10 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 
+@Slf4j
 public class WindupBuilder extends Builder {
 
 	private final String input;
@@ -58,12 +69,33 @@ public class WindupBuilder extends Builder {
 
 	@Override
 	public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
-		int returnCode = launcher.launch()
-				.cmds(CommandOptions.createCommand(this, build.getWorkspace()))
-				.stdout(listener)
-				.join();
+		Furnace furnace = null;
+		try {
+			furnace = createAndStartFurnace();
+			AddonRegistry addonRegistry = furnace.getAddonRegistry();
+			WindupProcessor windupProcessor = addonRegistry.getServices(WindupProcessor.class).get();
+			final WindupConfiguration config = ConfigOptions.createCommand(this, build.getWorkspace(), listener);
+			windupProcessor.execute(config);
+			// TODO: fix link logging
+			listener.getLogger().println("See output at: file://" + config.getOutputDirectory().toString() + "/index.html");
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		} finally {
+			if (furnace != null) {
+				furnace.close();
+			}
+		}
+		return true;
+	}
 
-		return returnCode == 0;
+	private Furnace createAndStartFurnace() throws ExecutionException, InterruptedException {
+		final Furnace furnace = FurnaceFactory.getInstance();
+
+		furnace.addRepository(AddonRepositoryMode.MUTABLE, new File(getDescriptor().getWindupHome(), "addons"));
+		// Start Furnace in another thread
+		System.setProperty("INTERACTIVE", "false");
+		Future<Furnace> future = furnace.startAsync();
+		return future.get();
 	}
 
 	@Override
