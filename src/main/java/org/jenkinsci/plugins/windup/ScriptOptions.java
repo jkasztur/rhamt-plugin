@@ -2,72 +2,115 @@ package org.jenkinsci.plugins.windup;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
 import hudson.util.ListBoxModel;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ScriptOptions {
 
 	private static File scriptFile = null;
+	private static String windupHome = null;
+	private static String sourceTechPath = null;
+	private static String targetTechPath = null;
 
-	private static void setScript(WindupBuilder.Descriptor decriptor) {
-		if (scriptFile != null) {
-			return;
+	private static void setScript(String home) {
+		if (windupHome == null) {
+			windupHome = home;
+		}
+		final File pluginFolder = new File(windupHome, "jenkins-plugin");
+		if (!pluginFolder.exists()) {
+			pluginFolder.mkdirs();
 		}
 
 		// TODO check if windows
-		scriptFile = new File(decriptor.getWindupHome(), "bin/windup");
+		scriptFile = new File(windupHome, "bin/windup");
 		if (!scriptFile.exists()) {
-			scriptFile = new File(decriptor.getWindupHome(), "bin/rhamt-cli");
+			scriptFile = new File(windupHome, "bin/rhamt-cli");
 		}
 	}
 
-	public static List<ListBoxModel.Option> getSourceTechnologies(WindupBuilder.Descriptor descriptor) {
-		return getTechnologies(descriptor, "Source");
-	}
+	public static List<ListBoxModel.Option> getTechnologies(String home, WindupTechnology arg) throws IOException {
+		setScript(home);
+		final List<ListBoxModel.Option> options = new ArrayList<>();
 
-	public static List<ListBoxModel.Option> getTargetTechnologies(WindupBuilder.Descriptor descriptor) {
-		return getTechnologies(descriptor, "Target");
-	}
+		String techPath;
+		switch (arg) {
+			case SOURCE:
+				if (sourceTechPath == null || !new File(sourceTechPath).exists()) {
+					reloadTechnology(arg);
+				}
+				techPath = sourceTechPath;
+				break;
+			case TARGET:
+				if (targetTechPath == null || !new File(targetTechPath).exists()) {
+					reloadTechnology(arg);
+				}
+				techPath = targetTechPath;
+				break;
+			default:
+				log.error("Invalid argument " + arg);
+				return options;
+		}
 
-	private static List<ListBoxModel.Option> getTechnologies(WindupBuilder.Descriptor descriptor, String arg) {
-		setScript(descriptor);
-		List<ListBoxModel.Option> l = new ArrayList<>();
-
-		ProcessBuilder pb = new ProcessBuilder(scriptFile.getAbsolutePath(), "--list" + arg + "Technologies");
-
-		Process process;
-		String result = "";
-		try {
-			process = pb.start();
-			BufferedReader reader =
-					new BufferedReader(new InputStreamReader(process.getInputStream(), Charset.defaultCharset()));
-			StringBuilder builder = new StringBuilder();
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(techPath), "UTF-8"))) {
 			String line;
 			while ((line = reader.readLine()) != null) {
-				builder.append(line);
-				builder.append(System.getProperty("line.separator"));
+				options.add(new ListBoxModel.Option(line));
 			}
-			result = builder.toString();
-			reader.close();
-		} catch (IOException e) {
-			l.add(new ListBoxModel.Option("Failed to retrieve " + arg));
-			return l;
 		}
 
-		String source = result.split("Available " + arg.toLowerCase() + " technologies:")[1];
-		for (String s : source.split("\n")) {
-			if ("".equals(s.trim())) {
-				continue;
-			}
-			l.add(new ListBoxModel.Option(s.trim()));
-		}
-		l.add(new ListBoxModel.Option("<custom>"));
+		return options;
+	}
 
-		return l;
+	private static void reloadTechnology(WindupTechnology arg) throws IOException {
+		final ProcessBuilder pb = new ProcessBuilder(scriptFile.getAbsolutePath(), "--list" + arg.getArg() + "Technologies");
+
+		Process process;
+		String result;
+
+		process = pb.start();
+		final BufferedReader reader =
+				new BufferedReader(new InputStreamReader(process.getInputStream(), Charset.defaultCharset()));
+		final StringBuilder builder = new StringBuilder();
+		String line;
+		while ((line = reader.readLine()) != null) {
+			builder.append(line);
+			builder.append(System.getProperty("line.separator"));
+		}
+		result = builder.toString();
+		reader.close();
+
+		final String techs = result.split("Available " + arg.getArg().toLowerCase() + " technologies:")[1];
+
+		final File techFile = new File(windupHome, "jenkins-plugin/" + arg.getArg().toLowerCase());
+
+		techFile.createNewFile();
+		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(techFile, false), "UTF-8")) {
+			for (String s : techs.split("\n")) {
+				String source = s.trim();
+				if ("".equals(source)) {
+					continue;
+				}
+				writer.write(source + System.lineSeparator());
+			}
+		}
+
+		switch (arg) {
+			case SOURCE:
+				sourceTechPath = techFile.getAbsolutePath();
+				break;
+			case TARGET:
+				targetTechPath = techFile.getAbsolutePath();
+				break;
+		}
 	}
 }

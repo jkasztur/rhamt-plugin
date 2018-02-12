@@ -136,13 +136,23 @@ public class WindupBuilder extends Builder {
 
 		public ListBoxModel doFillSourceItems() {
 			ListBoxModel list = new ListBoxModel();
-			list.addAll(ScriptOptions.getSourceTechnologies(this));
+			try {
+				list.addAll(ScriptOptions.getTechnologies(windupHome, WindupTechnology.SOURCE));
+			} catch (IOException e) {
+				e.printStackTrace();
+				return new ListBoxModel();
+			}
 			return list;
 		}
 
 		public ListBoxModel doFillTargetItems() {
 			ListBoxModel list = new ListBoxModel();
-			list.addAll(ScriptOptions.getTargetTechnologies(this));
+			try {
+				list.addAll(ScriptOptions.getTechnologies(windupHome, WindupTechnology.TARGET));
+			} catch (IOException e) {
+				e.printStackTrace();
+				return new ListBoxModel();
+			}
 			return list;
 		}
 
