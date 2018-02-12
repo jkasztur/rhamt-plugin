@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>windup</artifactId>
-	<version>1.0.0.Alpha</version>
+	<version>1.0.0.Alpha-SNAPSHOT</version>
 	<packaging>hpi</packaging>
 
 	<properties>
