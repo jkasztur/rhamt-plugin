@@ -15,7 +15,7 @@ import hudson.util.ListBoxModel;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ScriptOptions {
+public class TechnologyOptions {
 
 	private static File scriptFile = null;
 	private static String windupHome = null;
@@ -28,7 +28,10 @@ public class ScriptOptions {
 		}
 		final File pluginFolder = new File(windupHome, "jenkins-plugin");
 		if (!pluginFolder.exists()) {
-			pluginFolder.mkdirs();
+			final boolean result = pluginFolder.mkdirs();
+			if (!result) {
+				log.warn("jenkins-plugin folder was not created in " + windupHome);
+			}
 		}
 
 		// TODO check if windows
@@ -39,20 +42,19 @@ public class ScriptOptions {
 	}
 
 	public static List<ListBoxModel.Option> getTechnologies(String home, WindupTechnology arg) throws IOException {
-		setScript(home);
 		final List<ListBoxModel.Option> options = new ArrayList<>();
 
 		String techPath;
 		switch (arg) {
 			case SOURCE:
 				if (sourceTechPath == null || !new File(sourceTechPath).exists()) {
-					reloadTechnology(arg);
+					reloadTechnology(home, arg);
 				}
 				techPath = sourceTechPath;
 				break;
 			case TARGET:
 				if (targetTechPath == null || !new File(targetTechPath).exists()) {
-					reloadTechnology(arg);
+					reloadTechnology(home, arg);
 				}
 				techPath = targetTechPath;
 				break;
@@ -71,7 +73,8 @@ public class ScriptOptions {
 		return options;
 	}
 
-	private static void reloadTechnology(WindupTechnology arg) throws IOException {
+	public static void reloadTechnology(String home, WindupTechnology arg) throws IOException {
+		setScript(home);
 		final ProcessBuilder pb = new ProcessBuilder(scriptFile.getAbsolutePath(), "--list" + arg.getArg() + "Technologies");
 
 		Process process;
@@ -93,7 +96,11 @@ public class ScriptOptions {
 
 		final File techFile = new File(windupHome, "jenkins-plugin/" + arg.getArg().toLowerCase());
 
-		techFile.createNewFile();
+		final boolean fileResult = techFile.createNewFile();
+		if (!fileResult) {
+			log.error(techFile.getAbsolutePath() + " was not created.");
+			throw new IOException(techFile.getAbsolutePath() + " was not created.");
+		}
 		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(techFile, false), "UTF-8")) {
 			for (String s : techs.split("\n")) {
 				String source = s.trim();
