@@ -7,12 +7,17 @@
 	<f:entry title="Output" field="output">
 		<f:textbox default="windupReport"/>
 	</f:entry>
+
 	<f:entry title="Source" field="source">
-		<f:select default="Waiting..."/>
+		<f:select/>
 	</f:entry>
+	<f:validateButton method="reloadSource" title="Reload sources" progress="${%Reloading...}"/>
+
 	<f:entry title="Target" field="target">
-		<f:select default="Waiting..."/>
+		<f:select/>
 	</f:entry>
+	<f:validateButton method="reloadTarget" title="Reload targets" progress="${%Reloading...}"/>
+
 	<f:entry title="Additional options" field="altParams">
 		<f:textbox/>
 	</f:entry>
