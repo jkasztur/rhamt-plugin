@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.windup;
+package org.jenkinsci.plugins.rhamt;
 
 import org.jboss.forge.furnace.Furnace;
 import org.jboss.forge.furnace.addons.AddonRegistry;
@@ -7,7 +7,7 @@ import org.jboss.forge.furnace.se.FurnaceFactory;
 import org.jboss.windup.exec.WindupProcessor;
 import org.jboss.windup.exec.configuration.WindupConfiguration;
 
-import org.jenkinsci.plugins.windup.checking.InputOutputCheck;
+import org.jenkinsci.plugins.rhamt.checking.InputOutputCheck;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 
 @Slf4j
-public class WindupBuilder extends Builder {
+public class RhamtBuilder extends Builder {
 
 	private final String input;
 	private final String output;
@@ -41,7 +41,7 @@ public class WindupBuilder extends Builder {
 	private final String target;
 
 	@DataBoundConstructor
-	public WindupBuilder(String input, String output, String altParams, String source, String target) {
+	public RhamtBuilder(String input, String output, String altParams, String source, String target) {
 		this.input = input;
 		this.output = output;
 		this.altParams = altParams;
@@ -93,7 +93,7 @@ public class WindupBuilder extends Builder {
 	private Furnace createAndStartFurnace() throws ExecutionException, InterruptedException {
 		final Furnace furnace = FurnaceFactory.getInstance();
 
-		furnace.addRepository(AddonRepositoryMode.MUTABLE, new File(getDescriptor().getWindupHome(), "addons"));
+		furnace.addRepository(AddonRepositoryMode.MUTABLE, new File(getDescriptor().getRhamtHome(), "addons"));
 		// Start Furnace in another thread
 		System.setProperty("INTERACTIVE", "false");
 		Future<Furnace> future = furnace.startAsync();
@@ -108,7 +108,7 @@ public class WindupBuilder extends Builder {
 	@Extension
 	public static class Descriptor extends BuildStepDescriptor<Builder> {
 
-		private String windupHome;
+		private String rhamtHome;
 
 		public Descriptor() {
 			load();
@@ -122,17 +122,17 @@ public class WindupBuilder extends Builder {
 		@Nonnull
 		@Override
 		public String getDisplayName() {
-			return "execute Windup";
+			return "execute RHAMT";
 		}
 
-		public String getWindupHome() {
-			return windupHome;
+		public String getRhamtHome() {
+			return rhamtHome;
 		}
 
 		@Override
 		public boolean configure(StaplerRequest staplerRequest, JSONObject json) throws FormException {
-			json = json.getJSONObject("windup");
-			windupHome = json.getString("windupHome");
+			json = json.getJSONObject("rhamt");
+			rhamtHome = json.getString("rhamtHome");
 			save();
 			return true;
 		}
@@ -145,7 +145,7 @@ public class WindupBuilder extends Builder {
 			}
 			ListBoxModel list = new ListBoxModel();
 			try {
-				list.addAll(TechnologyOptions.getTechnologies(windupHome, WindupTechnology.SOURCE));
+				list.addAll(TechnologyOptions.getTechnologies(rhamtHome, Technology.SOURCE));
 				sourceItems = list;
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -156,7 +156,7 @@ public class WindupBuilder extends Builder {
 
 		public FormValidation doReloadSource() {
 			try {
-				TechnologyOptions.reloadTechnology(windupHome, WindupTechnology.SOURCE);
+				TechnologyOptions.reloadTechnology(rhamtHome, Technology.SOURCE);
 				sourceItems = doFillSourceItems();
 			} catch (Exception e) {
 				return FormValidation.error("Reloading failed: " + e.getMessage());
@@ -172,7 +172,7 @@ public class WindupBuilder extends Builder {
 			}
 			ListBoxModel list = new ListBoxModel();
 			try {
-				list.addAll(TechnologyOptions.getTechnologies(windupHome, WindupTechnology.TARGET));
+				list.addAll(TechnologyOptions.getTechnologies(rhamtHome, Technology.TARGET));
 				targetItems = list;
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -183,7 +183,7 @@ public class WindupBuilder extends Builder {
 
 		public FormValidation doReloadTarget() {
 			try {
-				TechnologyOptions.reloadTechnology(windupHome, WindupTechnology.TARGET);
+				TechnologyOptions.reloadTechnology(rhamtHome, Technology.TARGET);
 				targetItems = doFillTargetItems();
 			} catch (Exception e) {
 				return FormValidation.error("Reloading failed: " + e.getMessage());
@@ -191,7 +191,7 @@ public class WindupBuilder extends Builder {
 			return FormValidation.ok("Reload successful");
 		}
 
-		public FormValidation doCheckWindupHome(@QueryParameter String value) {
+		public FormValidation doCheckRhamtHome(@QueryParameter String value) {
 			if (value == null || value.trim().equals(""))
 				return FormValidation.warning("No directory specified.");
 
@@ -202,12 +202,12 @@ public class WindupBuilder extends Builder {
 			if (!ftmp.isDirectory())
 				return FormValidation.error("Not a directory.");
 
-			File exec = new File(ftmp, "bin/windup");
+			File exec = new File(ftmp, "bin/rhamt-cli");
 
 			if (!exec.exists())
-				return FormValidation.error("bin/windup script does not exist in Windup directory");
+				return FormValidation.error("bin/rhamt-cli script does not exist in RHAMT home");
 			if (!exec.canExecute())
-				return FormValidation.error("windup script is not executable.");
+				return FormValidation.error("rhamt-cli script is not executable.");
 
 			return FormValidation.ok();
 		}

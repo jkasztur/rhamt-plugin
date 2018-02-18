@@ -1,14 +1,14 @@
-package org.jenkinsci.plugins.windup;
+package org.jenkinsci.plugins.rhamt;
 
 import lombok.Getter;
 
-public enum WindupTechnology {
+public enum Technology {
 	SOURCE("Source"), TARGET("Target");
 
 	@Getter
 	private final String arg;
 
-	WindupTechnology(String arg) {
+	Technology(String arg) {
 		this.arg = arg;
 	}
 

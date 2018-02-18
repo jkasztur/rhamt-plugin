@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.windup.checking;
+package org.jenkinsci.plugins.rhamt.checking;
 
 import java.io.File;
 

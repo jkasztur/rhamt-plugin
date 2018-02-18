@@ -1,2 +1,2 @@
-# windup-plugin
-Windup Plugin for Jenkins
+# rhmat-plugin
+RHAMT Plugin for Jenkins

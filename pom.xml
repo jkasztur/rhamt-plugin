@@ -9,7 +9,7 @@
 		<version>2.7</version>
 	</parent>
 
-	<artifactId>windup</artifactId>
+	<artifactId>rhamt</artifactId>
 	<version>1.0.0.Alpha-SNAPSHOT</version>
 	<packaging>hpi</packaging>
 
@@ -25,8 +25,8 @@
 		<version.windup-rulesets>${version.windup}</version.windup-rulesets>
 	</properties>
 
-	<name>Windup plugin</name>
-	<description>Windup integration with Jenkins</description>
+	<name>RHAMT plugin</name>
+	<description>RHAMT integration with Jenkins</description>
 
 	<developers>
 		<developer>

@@ -1,4 +1,4 @@
 <?jelly escape-by-default='true'?>
 <div>
-  This plugin adds Windup integration to Jenkins
+  This plugin adds RHAMT integration to Jenkins
 </div>
