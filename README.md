@@ -1,2 +1,2 @@
-# rhmat-plugin
+# rhamt-plugin
 RHAMT Plugin for Jenkins
