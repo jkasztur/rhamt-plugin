@@ -4,12 +4,16 @@ import org.jboss.windup.exec.configuration.WindupConfiguration;
 import org.jboss.windup.exec.configuration.options.OverwriteOption;
 import org.jboss.windup.exec.configuration.options.SourceOption;
 import org.jboss.windup.exec.configuration.options.TargetOption;
+import org.jboss.windup.rules.apps.java.config.ExcludePackagesOption;
+import org.jboss.windup.rules.apps.java.config.ScanPackagesOption;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import hudson.FilePath;
@@ -32,7 +36,24 @@ public final class ConfigOptions {
 		addSource(builder);
 		addTarget(builder);
 
+
 		return config;
+	}
+
+	private static void addPackages(RhamtBuilder builder) {
+		String packages = builder.getPackages();
+		if(packages == null || packages.trim().equals("")) {
+			return;
+		}
+		config.setOptionValue(ScanPackagesOption.NAME, Arrays.asList(packages.split(" ")));
+	}
+
+	private static void addExcludedPackages(RhamtBuilder builder) {
+		String packages = builder.getExcludedPackages();
+		if (packages == null || packages.trim().equals("")) {
+			return;
+		}
+		config.setOptionValue(ExcludePackagesOption.NAME, Arrays.asList(packages.split(" ")));
 	}
 
 	private static void addInput(RhamtBuilder builder) {

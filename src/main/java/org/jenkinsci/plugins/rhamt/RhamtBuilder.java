@@ -28,45 +28,37 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 
 @Slf4j
 public class RhamtBuilder extends Builder {
 
+	@Getter
 	private final String input;
+	@Getter
 	private final String output;
+	@Getter
 	private final String altParams;
+	@Getter
 	private final String source;
+	@Getter
 	private final String target;
+	@Getter
+	private final String packages;
+	@Getter
+	private final String excludedPackages;
 
 	@DataBoundConstructor
-	public RhamtBuilder(String input, String output, String altParams, String source, String target) {
+	public RhamtBuilder(String input, String output, String altParams, String source, String target, String packages, String excludedPackages) {
 		this.input = input;
 		this.output = output;
 		this.altParams = altParams;
 		this.source = source;
 		this.target = target;
-	}
-
-	public String getInput() {
-		return input;
-	}
-
-	public String getOutput() {
-		return output;
-	}
-
-	public String getAltParams() {
-		return altParams;
-	}
-
-	public String getSource() {
-		return source;
-	}
-
-	public String getTarget() {
-		return target;
+		this.packages = packages;
+		this.excludedPackages = excludedPackages;
 	}
 
 	@Override
