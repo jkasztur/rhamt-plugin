@@ -42,15 +42,18 @@ public class TechnologyOptions {
 		final List<ListBoxModel.Option> options = new ArrayList<>();
 
 		String techPath;
+
 		switch (arg) {
 			case SOURCE:
-				if (sourceTechPath == null || !new File(sourceTechPath).exists()) {
+				sourceTechPath = new File(rhamtHome, "jenkins-plugin/source").getAbsolutePath();
+				if (!new File(sourceTechPath).exists()) {
 					reloadTechnology(home, arg);
 				}
 				techPath = sourceTechPath;
 				break;
 			case TARGET:
-				if (targetTechPath == null || !new File(targetTechPath).exists()) {
+				targetTechPath = new File(rhamtHome, "jenkins-plugin/target").getAbsolutePath();
+				if (!new File(targetTechPath).exists()) {
 					reloadTechnology(home, arg);
 				}
 				techPath = targetTechPath;
@@ -92,7 +95,10 @@ public class TechnologyOptions {
 		final String techs = result.split("Available " + arg.getArg().toLowerCase() + " technologies:")[1];
 
 		final File techFile = new File(rhamtHome, "jenkins-plugin/" + arg.getArg().toLowerCase());
-
+		if(techFile.exists()) {
+			boolean deleteResult = techFile.delete();
+			log.info("Old " + arg.getArg().toLowerCase() + " was deleted.");
+		}
 		final boolean fileResult = techFile.createNewFile();
 		if (!fileResult) {
 			log.error(techFile.getAbsolutePath() + " was not created.");
