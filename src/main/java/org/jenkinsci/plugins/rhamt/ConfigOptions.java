@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.windup;
+package org.jenkinsci.plugins.rhamt;
 
 import org.jboss.windup.exec.configuration.WindupConfiguration;
 import org.jboss.windup.exec.configuration.options.OverwriteOption;
@@ -21,7 +21,7 @@ public final class ConfigOptions {
 	private static FilePath workspace;
 	private static BuildListener listener;
 
-	public static WindupConfiguration createCommand(WindupBuilder builder, FilePath w, BuildListener buildListener) throws IOException, InterruptedException {
+	public static WindupConfiguration createCommand(RhamtBuilder builder, FilePath w, BuildListener buildListener) throws IOException, InterruptedException {
 
 		config = new WindupConfiguration();
 		workspace = w;
@@ -35,7 +35,7 @@ public final class ConfigOptions {
 		return config;
 	}
 
-	private static void addInput(WindupBuilder builder) {
+	private static void addInput(RhamtBuilder builder) {
 		String input = builder.getInput();
 		if (input == null || input.trim().equals("")) {
 			return;
@@ -47,7 +47,7 @@ public final class ConfigOptions {
 		}
 	}
 
-	private static void addOutput(WindupBuilder builder) throws IOException, InterruptedException {
+	private static void addOutput(RhamtBuilder builder) throws IOException, InterruptedException {
 		final String output = builder.getOutput();
 		if (output == null || output.trim().equals("")) {
 			// TODO if null set to workspace
@@ -63,7 +63,7 @@ public final class ConfigOptions {
 		}
 	}
 
-	private static void addSource(WindupBuilder builder) {
+	private static void addSource(RhamtBuilder builder) {
 		final String source = builder.getSource();
 		if ("<custom>".equals(source)) {
 			return;
@@ -74,7 +74,7 @@ public final class ConfigOptions {
 		listener.getLogger().println("Setting source: " + source);
 	}
 
-	private static void addTarget(WindupBuilder builder) {
+	private static void addTarget(RhamtBuilder builder) {
 		final String target = builder.getTarget();
 		if ("<custom>".equals(target)) {
 			return;
