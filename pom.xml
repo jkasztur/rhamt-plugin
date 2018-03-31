@@ -18,11 +18,6 @@
 		<java.level>8</java.level>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-
-		<version.forge>3.6.0.Final</version.forge>
-		<version.furnace>2.25.4.Final</version.furnace>
-		<version.windup>4.0.0.Beta2.1</version.windup>
-		<version.windup-rulesets>${version.windup}</version.windup-rulesets>
 	</properties>
 
 	<name>RHAMT plugin</name>
@@ -47,18 +42,10 @@
 			<version>1.4.01</version>
 		</dependency>
 
-		<!-- Windup dependencies -->
 		<dependency>
-			<groupId>org.jboss.windup</groupId>
-			<artifactId>windup-bootstrap</artifactId>
-			<version>${version.windup}</version>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.jboss.forge.furnace</groupId>
-			<artifactId>furnace-se</artifactId>
-			<version>${version.furnace}</version>
-		</dependency>
-
 		<!-- Additional -->
 		<dependency>
 			<groupId>org.eclipse.aether</groupId>

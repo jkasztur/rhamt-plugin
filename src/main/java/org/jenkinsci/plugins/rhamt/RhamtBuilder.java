@@ -1,12 +1,5 @@
 package org.jenkinsci.plugins.rhamt;
 
-import org.jboss.forge.furnace.Furnace;
-import org.jboss.forge.furnace.addons.AddonRegistry;
-import org.jboss.forge.furnace.repositories.AddonRepositoryMode;
-import org.jboss.forge.furnace.se.FurnaceFactory;
-import org.jboss.windup.exec.WindupProcessor;
-import org.jboss.windup.exec.configuration.WindupConfiguration;
-
 import org.jenkinsci.plugins.rhamt.checking.InputOutputCheck;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -16,8 +9,7 @@ import javax.annotation.Nonnull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.List;
 
 import hudson.Extension;
 import hudson.Launcher;
@@ -54,42 +46,30 @@ public class RhamtBuilder extends Builder {
 	public RhamtBuilder(String input, String output, String altParams, String source, String target, String packages, String excludedPackages) {
 		this.input = input;
 		this.output = output;
-		this.altParams = altParams;
 		this.source = source;
 		this.target = target;
 		this.packages = packages;
 		this.excludedPackages = excludedPackages;
+		this.altParams = altParams;
 	}
 
 	@Override
 	public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
-		Furnace furnace = null;
-		try {
-			furnace = createAndStartFurnace();
-			AddonRegistry addonRegistry = furnace.getAddonRegistry();
-			WindupProcessor windupProcessor = addonRegistry.getServices(WindupProcessor.class).get();
-			final WindupConfiguration config = ConfigOptions.createCommand(this, build.getWorkspace(), listener);
-			windupProcessor.execute(config);
-			// TODO: fix link logging
-			listener.getLogger().println("See output at: file://" + config.getOutputDirectory().toString() + "/index.html");
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-		} finally {
-			if (furnace != null) {
-				furnace.close();
-			}
-		}
-		return true;
-	}
+		Configuration config = new Configuration();
+		config.setInput(input);
+		config.setOutput(output);
+		config.setSource(source);
+		config.setTarget(target);
+		config.setPackages(packages);
+		config.setExcludedPackages(excludedPackages);
+		config.setWorkspace(build.getWorkspace());
 
-	private Furnace createAndStartFurnace() throws ExecutionException, InterruptedException {
-		final Furnace furnace = FurnaceFactory.getInstance();
+		String script = "/home/jkasztur/programs/rhamt-cli-4.0.0.Final/bin/rhamt-cli";
+		List<String> command = config.generateCommand(script);
 
-		furnace.addRepository(AddonRepositoryMode.MUTABLE, new File(getDescriptor().getRhamtHome(), "addons"));
-		// Start Furnace in another thread
-		System.setProperty("INTERACTIVE", "false");
-		Future<Furnace> future = furnace.startAsync();
-		return future.get();
+		int ret = launcher.launch().cmds(command).stdout(launcher.getListener()).join();
+
+		return ret == 0;
 	}
 
 	@Override
