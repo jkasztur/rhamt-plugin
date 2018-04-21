@@ -5,6 +5,8 @@ import org.jboss.windup.exec.configuration.options.OverwriteOption;
 import org.jboss.windup.exec.configuration.options.SourceOption;
 import org.jboss.windup.exec.configuration.options.TargetOption;
 
+import org.jenkinsci.plugins.rhamt.monitor.JenkinsProgressMonitor;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -31,8 +33,14 @@ public final class ConfigOptions {
 		addOutput(builder);
 		addSource(builder);
 		addTarget(builder);
+		addProgressMonitor();
 
 		return config;
+	}
+
+	private static void addProgressMonitor() {
+		JenkinsProgressMonitor monitor = new JenkinsProgressMonitor(listener);
+		config.setProgressMonitor(monitor);
 	}
 
 	private static void addInput(RhamtBuilder builder) {
