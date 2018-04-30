@@ -6,6 +6,9 @@ import org.jboss.forge.furnace.repositories.AddonRepositoryMode;
 import org.jboss.forge.furnace.se.FurnaceFactory;
 import org.jboss.windup.exec.WindupProcessor;
 import org.jboss.windup.exec.configuration.WindupConfiguration;
+import org.jboss.windup.graph.GraphContext;
+import org.jboss.windup.graph.GraphContextFactory;
+import org.jboss.windup.util.PathUtil;
 
 import org.jenkinsci.plugins.rhamt.checking.InputOutputCheck;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -16,6 +19,8 @@ import javax.annotation.Nonnull;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -71,12 +76,21 @@ public class RhamtBuilder extends Builder {
 
 	@Override
 	public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
+		// TODO: change to System value
+		System.setProperty(PathUtil.WINDUP_HOME, Paths.get("/home/jkasztur/programs/rhamt-cli-4.0.0.Final").toString());
+
 		Furnace furnace = null;
 		try {
 			furnace = createAndStartFurnace();
-			AddonRegistry addonRegistry = furnace.getAddonRegistry();
-			WindupProcessor windupProcessor = addonRegistry.getServices(WindupProcessor.class).get();
+			final AddonRegistry addonRegistry = furnace.getAddonRegistry();
+			final WindupProcessor windupProcessor = addonRegistry.getServices(WindupProcessor.class).get();
 			final WindupConfiguration config = ConfigOptions.createCommand(this, build.getWorkspace(), listener);
+
+			final GraphContextFactory graphContextFactory = addonRegistry.getServices(GraphContextFactory.class).get();
+			final Path graphPath = config.getOutputDirectory().resolve("graph");
+			final GraphContext graphContext = graphContextFactory.create(graphPath);
+
+			config.setGraphContext(graphContext);
 			windupProcessor.execute(config);
 			// TODO: fix link logging
 			listener.getLogger().println("See output at: file://" + config.getOutputDirectory().toString() + "/index.html");
@@ -92,11 +106,10 @@ public class RhamtBuilder extends Builder {
 
 	private Furnace createAndStartFurnace() throws ExecutionException, InterruptedException {
 		final Furnace furnace = FurnaceFactory.getInstance();
-
 		furnace.addRepository(AddonRepositoryMode.MUTABLE, new File(getDescriptor().getRhamtHome(), "addons"));
 		// Start Furnace in another thread
 		System.setProperty("INTERACTIVE", "false");
-		Future<Furnace> future = furnace.startAsync();
+		final Future<Furnace> future = furnace.startAsync();
 		return future.get();
 	}
 

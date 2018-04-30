@@ -4,6 +4,7 @@ import org.jboss.windup.exec.configuration.WindupConfiguration;
 import org.jboss.windup.exec.configuration.options.OverwriteOption;
 import org.jboss.windup.exec.configuration.options.SourceOption;
 import org.jboss.windup.exec.configuration.options.TargetOption;
+import org.jboss.windup.util.PathUtil;
 
 import org.jenkinsci.plugins.rhamt.monitor.JenkinsProgressMonitor;
 
@@ -34,7 +35,7 @@ public final class ConfigOptions {
 		addSource(builder);
 		addTarget(builder);
 		addProgressMonitor();
-
+		addTempOptions();
 		return config;
 	}
 
@@ -67,7 +68,7 @@ public final class ConfigOptions {
 
 		if (new File(outputUri).exists()) {
 			config.setOptionValue(OverwriteOption.NAME, true);
-			listener.getLogger().println("Adding input path: " + outputPath.toString());
+			listener.getLogger().println("Adding output path: " + outputPath.toString());
 		}
 	}
 
@@ -91,5 +92,11 @@ public final class ConfigOptions {
 		targets.add(target);
 		config.setOptionValue(TargetOption.NAME, targets);
 		listener.getLogger().println("Setting target: " + target);
+	}
+
+	private static void addTempOptions() {
+		config.setOnline(true);
+		//config.setOptionValue(ScanPackagesOption.NAME, "com.acme");
+		config.addDefaultUserRulesDirectory(PathUtil.getWindupRulesDir());
 	}
 }
