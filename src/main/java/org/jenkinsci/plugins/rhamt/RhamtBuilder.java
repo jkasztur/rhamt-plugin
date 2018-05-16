@@ -20,7 +20,6 @@ import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -76,9 +75,7 @@ public class RhamtBuilder extends Builder {
 
 	@Override
 	public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
-		// TODO: change to System value
-		System.setProperty(PathUtil.WINDUP_HOME, Paths.get("/home/jkasztur/programs/rhamt-cli-4.0.0.Final").toString());
-
+		System.setProperty(PathUtil.WINDUP_HOME, getDescriptor().getRhamtHome());
 		Furnace furnace = null;
 		try {
 			furnace = createAndStartFurnace();
