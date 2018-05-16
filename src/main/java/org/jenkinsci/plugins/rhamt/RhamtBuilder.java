@@ -43,14 +43,16 @@ public class RhamtBuilder extends Builder {
 	private final String altParams;
 	private final String source;
 	private final String target;
+	private final String userRulesDir;
 
 	@DataBoundConstructor
-	public RhamtBuilder(String input, String output, String altParams, String source, String target) {
+	public RhamtBuilder(String input, String output, String altParams, String source, String target, String userRulesDir) {
 		this.input = input;
 		this.output = output;
 		this.altParams = altParams;
 		this.source = source;
 		this.target = target;
+		this.userRulesDir = userRulesDir;
 	}
 
 	public String getInput() {
@@ -71,6 +73,10 @@ public class RhamtBuilder extends Builder {
 
 	public String getTarget() {
 		return target;
+	}
+
+	public String getUserRulesDir() {
+		return userRulesDir;
 	}
 
 	@Override
