@@ -17,7 +17,9 @@ import java.util.List;
 
 import hudson.FilePath;
 import hudson.model.BuildListener;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public final class ConfigOptions {
 
 	private static WindupConfiguration config;
@@ -36,6 +38,7 @@ public final class ConfigOptions {
 		addTarget(builder);
 		addProgressMonitor();
 		addTempOptions();
+		addUserRulesDir(builder);
 		return config;
 	}
 
@@ -92,6 +95,18 @@ public final class ConfigOptions {
 		targets.add(target);
 		config.setOptionValue(TargetOption.NAME, targets);
 		listener.getLogger().println("Setting target: " + target);
+	}
+
+	private static void addUserRulesDir(RhamtBuilder builder) {
+		// Always adding default user rules dir
+		config.addDefaultUserRulesDirectory(PathUtil.getWindupRulesDir());
+		final String rulesDir = builder.getUserRulesDir();
+		if (rulesDir == null || rulesDir.trim().equals("")) {
+			return;
+		}
+		File rulesDirFile = new File(rulesDir);
+		config.addDefaultUserRulesDirectory(rulesDirFile.toPath());
+		listener.getLogger().println("Setting user rules directory: " + rulesDirFile.getAbsolutePath());
 	}
 
 	private static void addTempOptions() {

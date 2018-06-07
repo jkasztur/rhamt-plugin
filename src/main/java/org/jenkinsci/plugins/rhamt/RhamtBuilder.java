@@ -9,6 +9,7 @@ import org.jboss.windup.exec.configuration.WindupConfiguration;
 import org.jboss.windup.graph.GraphContext;
 import org.jboss.windup.graph.GraphContextFactory;
 import org.jboss.windup.util.PathUtil;
+import org.jboss.windup.util.exception.WindupException;
 
 import org.jenkinsci.plugins.rhamt.checking.InputOutputCheck;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -32,49 +33,48 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 
 @Slf4j
 public class RhamtBuilder extends Builder {
 
-	private final String input;
-	private final String output;
-	private final String altParams;
-	private final String source;
-	private final String target;
+	@Getter @Setter
+	private String input;
+	@Getter @Setter
+	private String output;
+	@Getter @Setter
+	private String altParams;
+	@Getter @Setter
+	private String source;
+	@Getter @Setter
+	private String target;
+	@Getter @Setter
+	private String userRulesDir;
 
 	@DataBoundConstructor
-	public RhamtBuilder(String input, String output, String altParams, String source, String target) {
+	public RhamtBuilder(String input, String output, String altParams, String source, String target, String userRulesDir) {
 		this.input = input;
 		this.output = output;
 		this.altParams = altParams;
 		this.source = source;
 		this.target = target;
+		this.userRulesDir = userRulesDir;
 	}
 
-	public String getInput() {
-		return input;
-	}
+	// Empty constructor for testing purposes
+	public RhamtBuilder(){
 
-	public String getOutput() {
-		return output;
-	}
-
-	public String getAltParams() {
-		return altParams;
-	}
-
-	public String getSource() {
-		return source;
-	}
-
-	public String getTarget() {
-		return target;
 	}
 
 	@Override
 	public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
+		final String rhamtHome = getDescriptor().getRhamtHome();
+		if(rhamtHome == null || rhamtHome.trim().isEmpty()) {
+			throw new WindupException("RHAMT home is not set.");
+		}
 		System.setProperty(PathUtil.WINDUP_HOME, getDescriptor().getRhamtHome());
 		Furnace furnace = null;
 		try {
@@ -137,6 +137,10 @@ public class RhamtBuilder extends Builder {
 
 		public String getRhamtHome() {
 			return rhamtHome;
+		}
+
+		protected void setRhamtHome(String home) {
+			rhamtHome = home;
 		}
 
 		@Override
