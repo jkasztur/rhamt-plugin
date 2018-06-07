@@ -17,7 +17,9 @@ import java.util.List;
 
 import hudson.FilePath;
 import hudson.model.BuildListener;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public final class ConfigOptions {
 
 	private static WindupConfiguration config;
@@ -96,6 +98,8 @@ public final class ConfigOptions {
 	}
 
 	private static void addUserRulesDir(RhamtBuilder builder) {
+		// Always adding default user rules dir
+		config.addDefaultUserRulesDirectory(PathUtil.getWindupRulesDir());
 		final String rulesDir = builder.getUserRulesDir();
 		if (rulesDir == null || rulesDir.trim().equals("")) {
 			return;
