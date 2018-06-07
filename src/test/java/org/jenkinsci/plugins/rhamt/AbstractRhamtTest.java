@@ -7,10 +7,8 @@ import org.junit.Rule;
 
 import org.jvnet.hudson.test.JenkinsRule;
 
-import com.google.common.io.Files;
-
-import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import hudson.model.Cause;
@@ -20,10 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public abstract class AbstractRhamtTest {
-
-	// TODO(jaksztur): change to value taken from properties
-	protected String rhamtHome = "/home/jkasztur/programs/rhamt-cli-4.0.0.Final";
-	FreeStyleProject project;
+	private boolean isInitialized = false;
+	protected String rhamtHome;
+	protected FreeStyleProject project;
 
 	@Rule
 	public JenkinsRule jenkinsRule = new JenkinsRule();
@@ -33,15 +30,21 @@ public abstract class AbstractRhamtTest {
 		project = jenkinsRule.jenkins.createProject(FreeStyleProject.class, "junitTestproject");
 	}
 
+	@Before
+	public void setProperties() throws IOException {
+		if (!isInitialized) {
+			final Properties properties = new Properties();
+			properties.load(AbstractRhamtTest.class.getClassLoader().getResource("test.properties").openStream());
+			rhamtHome = properties.getProperty("rhamt.home");
+			log.info("RHAMT_HOME: " + rhamtHome);
+		}
+		isInitialized = true;
+	}
+
 	protected void testBuildResult(Result expected) throws Exception {
 		project.scheduleBuild(new Cause.UserIdCause());
 		jenkinsRule.waitUntilNoActivityUpTo(new Long(TimeUnit.MINUTES.toMillis(5)).intValue());
 		project.getLastBuild().keepLog();
-		File logFile = project.getLastBuild().getLogFile();
-		Files.copy(logFile, new File("/home/jkasztur/jenkinsTestLogs/" + logFile.getName()));
-		log.info(project.getLastBuild().getLog());
-		log.info(logFile.getAbsolutePath());
-		log.info("HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 		assertEquals("Build should have been " + expected, expected, project.getLastBuild().getResult());
 	}
 }
