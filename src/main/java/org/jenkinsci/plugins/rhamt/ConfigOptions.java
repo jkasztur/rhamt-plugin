@@ -4,6 +4,7 @@ import org.jboss.windup.exec.configuration.WindupConfiguration;
 import org.jboss.windup.exec.configuration.options.OverwriteOption;
 import org.jboss.windup.exec.configuration.options.SourceOption;
 import org.jboss.windup.exec.configuration.options.TargetOption;
+import org.jboss.windup.rules.apps.java.config.ScanPackagesOption;
 import org.jboss.windup.util.PathUtil;
 
 import org.jenkinsci.plugins.rhamt.monitor.JenkinsProgressMonitor;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import hudson.FilePath;
@@ -39,6 +41,7 @@ public final class ConfigOptions {
 		addProgressMonitor();
 		addTempOptions();
 		addUserRulesDir(builder);
+		addPackages(builder);
 		return config;
 	}
 
@@ -107,6 +110,17 @@ public final class ConfigOptions {
 		File rulesDirFile = new File(rulesDir);
 		config.addDefaultUserRulesDirectory(rulesDirFile.toPath());
 		listener.getLogger().println("Setting user rules directory: " + rulesDirFile.getAbsolutePath());
+	}
+
+	private static void addPackages(RhamtBuilder builder) {
+		String raw = builder.getPackages();
+		if (raw == null || raw.trim().isEmpty()) {
+			return;
+		}
+
+		String[] splitted = raw.split(",");
+		config.setOptionValue(ScanPackagesOption.NAME, Arrays.asList(splitted));
+		listener.getLogger().println("Setting scan packages: " + Arrays.toString(splitted));
 	}
 
 	private static void addTempOptions() {
