@@ -4,6 +4,7 @@ import org.jboss.windup.exec.configuration.WindupConfiguration;
 import org.jboss.windup.exec.configuration.options.OverwriteOption;
 import org.jboss.windup.exec.configuration.options.SourceOption;
 import org.jboss.windup.exec.configuration.options.TargetOption;
+import org.jboss.windup.rules.apps.java.config.ExcludePackagesOption;
 import org.jboss.windup.rules.apps.java.config.ScanPackagesOption;
 import org.jboss.windup.util.PathUtil;
 
@@ -42,6 +43,7 @@ public final class ConfigOptions {
 		addTempOptions();
 		addUserRulesDir(builder);
 		addPackages(builder);
+		addExcludedPackages(builder);
 		return config;
 	}
 
@@ -121,6 +123,17 @@ public final class ConfigOptions {
 		String[] splitted = raw.split(",");
 		config.setOptionValue(ScanPackagesOption.NAME, Arrays.asList(splitted));
 		listener.getLogger().println("Setting scan packages: " + Arrays.toString(splitted));
+	}
+
+	private static void addExcludedPackages(RhamtBuilder builder) {
+		String raw = builder.getExcludedPackages();
+		if (raw == null || raw.trim().isEmpty()) {
+			return;
+		}
+
+		String[] splitted = raw.split(",");
+		config.setOptionValue(ExcludePackagesOption.NAME, Arrays.asList(splitted));
+		listener.getLogger().println("Setting excluded packages: " + Arrays.toString(splitted));
 	}
 
 	private static void addTempOptions() {

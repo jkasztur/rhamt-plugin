@@ -62,9 +62,13 @@ public class RhamtBuilder extends Builder {
 	@Getter
 	@Setter
 	private String packages;
+	@Getter
+	@Setter
+	private String excludedPackages;
 
 	@DataBoundConstructor
-	public RhamtBuilder(String input, String output, String altParams, String source, String target, String userRulesDir, String packages) {
+	public RhamtBuilder(String input, String output, String altParams, String source, String target, String userRulesDir,
+			String packages, String excludedPackages) {
 		this.input = input;
 		this.output = output;
 		this.altParams = altParams;
@@ -72,6 +76,7 @@ public class RhamtBuilder extends Builder {
 		this.target = target;
 		this.userRulesDir = userRulesDir;
 		this.packages = packages;
+		this.excludedPackages = excludedPackages;
 	}
 
 	// Empty constructor for testing purposes
