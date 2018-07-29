@@ -22,6 +22,14 @@
 		<f:textbox/>
 	</f:entry>
 
+	<f:entry title="Packages" field="packages">
+		<f:textbox/>
+	</f:entry>
+
+	<f:entry title="Excluded packages" field="excludedPackages">
+		<f:textbox/>
+	</f:entry>
+
 	<f:entry title="Additional options" field="altParams">
 		<f:textbox/>
 	</f:entry>

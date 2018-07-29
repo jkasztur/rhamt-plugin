@@ -41,38 +41,53 @@ import net.sf.json.JSONObject;
 @Slf4j
 public class RhamtBuilder extends Builder {
 
-	@Getter @Setter
+	@Getter
+	@Setter
 	private String input;
-	@Getter @Setter
+	@Getter
+	@Setter
 	private String output;
-	@Getter @Setter
+	@Getter
+	@Setter
 	private String altParams;
-	@Getter @Setter
+	@Getter
+	@Setter
 	private String source;
-	@Getter @Setter
+	@Getter
+	@Setter
 	private String target;
-	@Getter @Setter
+	@Getter
+	@Setter
 	private String userRulesDir;
+	@Getter
+	@Setter
+	private String packages;
+	@Getter
+	@Setter
+	private String excludedPackages;
 
 	@DataBoundConstructor
-	public RhamtBuilder(String input, String output, String altParams, String source, String target, String userRulesDir) {
+	public RhamtBuilder(String input, String output, String altParams, String source, String target, String userRulesDir,
+			String packages, String excludedPackages) {
 		this.input = input;
 		this.output = output;
 		this.altParams = altParams;
 		this.source = source;
 		this.target = target;
 		this.userRulesDir = userRulesDir;
+		this.packages = packages;
+		this.excludedPackages = excludedPackages;
 	}
 
 	// Empty constructor for testing purposes
-	public RhamtBuilder(){
+	public RhamtBuilder() {
 
 	}
 
 	@Override
 	public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
 		final String rhamtHome = getDescriptor().getRhamtHome();
-		if(rhamtHome == null || rhamtHome.trim().isEmpty()) {
+		if (rhamtHome == null || rhamtHome.trim().isEmpty()) {
 			throw new WindupException("RHAMT home is not set.");
 		}
 		System.setProperty(PathUtil.WINDUP_HOME, getDescriptor().getRhamtHome());
