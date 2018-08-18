@@ -66,8 +66,24 @@
 			<artifactId>lombok</artifactId>
 			<version>1.16.12</version>
 		</dependency>
-
 	</dependencies>
+
+	<profiles>
+		<profile>
+			<!-- will run only Jenkins default tests -->
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<test>InjectedTest</test>
+			</properties>
+		</profile>
+		<profile>
+			<!-- empty profile, will run all tests -->
+			<id>int-tests</id>
+		</profile>
+	</profiles>
 
 	<repositories>
 		<repository>
