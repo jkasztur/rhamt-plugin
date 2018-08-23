@@ -65,18 +65,31 @@ public class RhamtBuilder extends Builder {
 	@Getter
 	@Setter
 	private String excludedPackages;
+	@Getter
+	@Setter
+	private boolean online;
+	@Getter
+	@Setter
+	private boolean sourceMode;
+	@Getter
+	@Setter
+	private boolean explodedApp;
 
 	@DataBoundConstructor
 	public RhamtBuilder(String input, String output, String altParams, String source, String target, String userRulesDir,
-			String packages, String excludedPackages) {
-		this.input = input;
-		this.output = output;
-		this.altParams = altParams;
-		this.source = source;
-		this.target = target;
-		this.userRulesDir = userRulesDir;
-		this.packages = packages;
-		this.excludedPackages = excludedPackages;
+			String packages, String excludedPackages, boolean skipReports, boolean online, boolean sourceMode,
+			boolean explodedApp) {
+		setInput(input);
+		setOutput(output);
+		setAltParams(altParams);
+		setSource(source);
+		setTarget(target);
+		setUserRulesDir(userRulesDir);
+		setPackages(packages);
+		setExcludedPackages(excludedPackages);
+		setOnline(online);
+		setSourceMode(sourceMode);
+		setExplodedApp(explodedApp);
 	}
 
 	// Empty constructor for testing purposes
