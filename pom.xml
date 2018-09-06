@@ -19,10 +19,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 
-		<version.forge>3.6.0.Final</version.forge>
-		<version.furnace>2.25.4.Final</version.furnace>
 		<version.windup>4.0.0.Final</version.windup>
-		<version.windup-rulesets>${version.windup}</version.windup-rulesets>
 	</properties>
 
 	<name>RHAMT plugin</name>
@@ -36,26 +33,36 @@
 		</developer>
 	</developers>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jboss.windup</groupId>
+				<artifactId>windup-bom</artifactId>
+				<version>${version.windup}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
+		<!-- Windup dependencies -->
+		<dependency>
+			<groupId>org.jboss.windup</groupId>
+			<artifactId>windup-bootstrap</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.forge.furnace</groupId>
+			<artifactId>furnace-se</artifactId>
+		</dependency>
+
+		<!-- Additional -->
 		<dependency>
 			<groupId>xml-apis</groupId>
 			<artifactId>xml-apis</artifactId>
 			<version>1.4.01</version>
 		</dependency>
-
-		<!-- Windup dependencies -->
-		<dependency>
-			<groupId>org.jboss.windup</groupId>
-			<artifactId>windup-bootstrap</artifactId>
-			<version>${version.windup}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.forge.furnace</groupId>
-			<artifactId>furnace-se</artifactId>
-			<version>${version.furnace}</version>
-		</dependency>
-
-		<!-- Additional -->
 		<dependency>
 			<groupId>org.eclipse.aether</groupId>
 			<artifactId>aether-spi</artifactId>
@@ -90,24 +97,9 @@
 			<id>repo.jenkins-ci.org</id>
 			<url>https://repo.jenkins-ci.org/public/</url>
 		</repository>
-
-		<repository>
-			<id>jboss</id>
-			<name>jboss public group</name>
-			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
-			<layout>default</layout>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</repository>
 		<repository>
 			<id>central</id>
-			<url>http://repo1.maven.org/maven2</url>
+			<url>http://central.maven.org/maven2</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -120,7 +112,7 @@
 		</pluginRepository>
 		<pluginRepository>
 			<id>central</id>
-			<url>http://repo1.maven.org/maven2</url>
+			<url>http://central.maven.org/maven2</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>

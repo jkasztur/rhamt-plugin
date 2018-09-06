@@ -12,7 +12,7 @@ import org.jboss.windup.util.PathUtil;
 import org.jboss.windup.util.exception.WindupException;
 
 import org.jenkinsci.plugins.rhamt.checking.InputOutputCheck;
-import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
@@ -41,60 +41,53 @@ import net.sf.json.JSONObject;
 @Slf4j
 public class RhamtBuilder extends Builder {
 
+	@DataBoundSetter
 	@Getter
 	@Setter
 	private String input;
+	@DataBoundSetter
 	@Getter
 	@Setter
 	private String output;
+	@DataBoundSetter
 	@Getter
 	@Setter
 	private String altParams;
+	@DataBoundSetter
 	@Getter
 	@Setter
 	private String source;
+	@DataBoundSetter
 	@Getter
 	@Setter
 	private String target;
+	@DataBoundSetter
 	@Getter
 	@Setter
 	private String userRulesDir;
+	@DataBoundSetter
 	@Getter
 	@Setter
 	private String packages;
+	@DataBoundSetter
 	@Getter
 	@Setter
 	private String excludedPackages;
+	@DataBoundSetter
 	@Getter
 	@Setter
 	private boolean online;
+	@DataBoundSetter
 	@Getter
 	@Setter
 	private boolean sourceMode;
+	@DataBoundSetter
 	@Getter
 	@Setter
 	private boolean explodedApp;
 
-	@DataBoundConstructor
-	public RhamtBuilder(String input, String output, String altParams, String source, String target, String userRulesDir,
-			String packages, String excludedPackages, boolean skipReports, boolean online, boolean sourceMode,
-			boolean explodedApp) {
-		setInput(input);
-		setOutput(output);
-		setAltParams(altParams);
-		setSource(source);
-		setTarget(target);
-		setUserRulesDir(userRulesDir);
-		setPackages(packages);
-		setExcludedPackages(excludedPackages);
-		setOnline(online);
-		setSourceMode(sourceMode);
-		setExplodedApp(explodedApp);
-	}
-
 	// Empty constructor for testing purposes
 	public RhamtBuilder() {
-
 	}
 
 	@Override
