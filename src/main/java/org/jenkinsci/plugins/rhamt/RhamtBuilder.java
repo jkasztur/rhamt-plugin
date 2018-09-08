@@ -12,6 +12,7 @@ import org.jboss.windup.util.PathUtil;
 import org.jboss.windup.util.exception.WindupException;
 
 import org.jenkinsci.plugins.rhamt.checking.InputOutputCheck;
+import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -39,54 +40,38 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 
 @Slf4j
+@Getter
+@Setter
 public class RhamtBuilder extends Builder {
 
 	@DataBoundSetter
-	@Getter
-	@Setter
 	private String input;
 	@DataBoundSetter
-	@Getter
-	@Setter
 	private String output;
 	@DataBoundSetter
-	@Getter
-	@Setter
 	private String altParams;
 	@DataBoundSetter
-	@Getter
-	@Setter
 	private String source;
 	@DataBoundSetter
-	@Getter
-	@Setter
 	private String target;
 	@DataBoundSetter
-	@Getter
-	@Setter
 	private String userRulesDir;
 	@DataBoundSetter
-	@Getter
-	@Setter
 	private String packages;
 	@DataBoundSetter
-	@Getter
-	@Setter
 	private String excludedPackages;
 	@DataBoundSetter
-	@Getter
-	@Setter
 	private boolean online;
 	@DataBoundSetter
-	@Getter
-	@Setter
 	private boolean sourceMode;
 	@DataBoundSetter
-	@Getter
-	@Setter
 	private boolean explodedApp;
+	@DataBoundSetter
+	private boolean mavenize;
+	@DataBoundSetter
+	private String mavenizeGroupId;
 
-	// Empty constructor for testing purposes
+	@DataBoundConstructor
 	public RhamtBuilder() {
 	}
 

@@ -8,6 +8,8 @@ import org.jboss.windup.exec.configuration.options.TargetOption;
 import org.jboss.windup.rules.apps.java.config.ExcludePackagesOption;
 import org.jboss.windup.rules.apps.java.config.ScanPackagesOption;
 import org.jboss.windup.rules.apps.java.config.SourceModeOption;
+import org.jboss.windup.rules.apps.mavenize.MavenizeGroupIdOption;
+import org.jboss.windup.rules.apps.mavenize.MavenizeOption;
 import org.jboss.windup.util.PathUtil;
 
 import org.jenkinsci.plugins.rhamt.monitor.JenkinsProgressMonitor;
@@ -16,9 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import hudson.FilePath;
 import hudson.model.BuildListener;
@@ -42,11 +42,11 @@ public final class ConfigOptions {
 		addSource(builder);
 		addTarget(builder);
 		addProgressMonitor();
-		addTempOptions();
 		addUserRulesDir(builder);
 		addPackages(builder);
 		addExcludedPackages(builder);
 		addBooleanParameters(builder);
+		addMavenizeParameters(builder);
 		return config;
 	}
 
@@ -83,26 +83,14 @@ public final class ConfigOptions {
 		}
 	}
 
+	// TODO(jkasztur): resolve 'custom' source and target
+	// TODO(jkasztur): resolve multiple source and target
 	private static void addSource(RhamtBuilder builder) {
-		final String source = builder.getSource();
-		if ("<custom>".equals(source)) {
-			return;
-		}
-		List<String> sources = new ArrayList<>();
-		sources.add(source);
-		config.setOptionValue(SourceOption.NAME, sources);
-		listener.getLogger().println("Setting source: " + source);
+		setArrayParam(SourceOption.NAME, builder.getSource());
 	}
 
 	private static void addTarget(RhamtBuilder builder) {
-		final String target = builder.getTarget();
-		if ("<custom>".equals(target)) {
-			return;
-		}
-		List<String> targets = new ArrayList<>();
-		targets.add(target);
-		config.setOptionValue(TargetOption.NAME, targets);
-		listener.getLogger().println("Setting target: " + target);
+		setArrayParam(TargetOption.NAME, builder.getTarget());
 	}
 
 	private static void addUserRulesDir(RhamtBuilder builder) {
@@ -118,25 +106,11 @@ public final class ConfigOptions {
 	}
 
 	private static void addPackages(RhamtBuilder builder) {
-		String raw = builder.getPackages();
-		if (raw == null || raw.trim().isEmpty()) {
-			return;
-		}
-
-		String[] splitted = raw.split(",");
-		config.setOptionValue(ScanPackagesOption.NAME, Arrays.asList(splitted));
-		listener.getLogger().println("Setting scan packages: " + Arrays.toString(splitted));
+		setArrayParam(ScanPackagesOption.NAME, builder.getPackages());
 	}
 
 	private static void addExcludedPackages(RhamtBuilder builder) {
-		String raw = builder.getExcludedPackages();
-		if (raw == null || raw.trim().isEmpty()) {
-			return;
-		}
-
-		String[] splitted = raw.split(",");
-		config.setOptionValue(ExcludePackagesOption.NAME, Arrays.asList(splitted));
-		listener.getLogger().println("Setting excluded packages: " + Arrays.toString(splitted));
+		setArrayParam(ExcludePackagesOption.NAME, builder.getExcludedPackages());
 	}
 
 	private static void addBooleanParameters(RhamtBuilder builder) {
@@ -145,9 +119,26 @@ public final class ConfigOptions {
 		config.setOptionValue(SourceModeOption.NAME, builder.isSourceMode());
 	}
 
-	private static void addTempOptions() {
-		config.setOnline(true);
-		//config.setOptionValue(ScanPackagesOption.NAME, "com.acme");
-		config.addDefaultUserRulesDirectory(PathUtil.getWindupRulesDir());
+	private static void addMavenizeParameters(RhamtBuilder builder) {
+		config.setOptionValue(MavenizeOption.NAME, builder.isMavenize());
+		setStringParam(MavenizeGroupIdOption.NAME, builder.getMavenizeGroupId());
+	}
+
+	private static void setStringParam(String keyName, String value) {
+		if (value == null || value.trim().equals("")) {
+			return;
+		}
+		listener.getLogger().println(String.format("Setting %s: %s", keyName, value));
+		config.setOptionValue(keyName, value);
+	}
+
+	private static void setArrayParam(String keyName, String raw) {
+		if (raw == null || raw.trim().isEmpty()) {
+			return;
+		}
+
+		String[] splitted = raw.split(",");
+		listener.getLogger().println(String.format("Setting %s: %s", keyName, Arrays.toString(splitted)));
+		config.setOptionValue(keyName, Arrays.asList(splitted));
 	}
 }
