@@ -1,11 +1,13 @@
 package org.jenkinsci.plugins.rhamt;
 
 import org.jboss.windup.exec.configuration.WindupConfiguration;
+import org.jboss.windup.exec.configuration.options.ExplodedAppInputOption;
 import org.jboss.windup.exec.configuration.options.OverwriteOption;
 import org.jboss.windup.exec.configuration.options.SourceOption;
 import org.jboss.windup.exec.configuration.options.TargetOption;
 import org.jboss.windup.rules.apps.java.config.ExcludePackagesOption;
 import org.jboss.windup.rules.apps.java.config.ScanPackagesOption;
+import org.jboss.windup.rules.apps.java.config.SourceModeOption;
 import org.jboss.windup.util.PathUtil;
 
 import org.jenkinsci.plugins.rhamt.monitor.JenkinsProgressMonitor;
@@ -44,6 +46,7 @@ public final class ConfigOptions {
 		addUserRulesDir(builder);
 		addPackages(builder);
 		addExcludedPackages(builder);
+		addBooleanParameters(builder);
 		return config;
 	}
 
@@ -134,6 +137,12 @@ public final class ConfigOptions {
 		String[] splitted = raw.split(",");
 		config.setOptionValue(ExcludePackagesOption.NAME, Arrays.asList(splitted));
 		listener.getLogger().println("Setting excluded packages: " + Arrays.toString(splitted));
+	}
+
+	private static void addBooleanParameters(RhamtBuilder builder) {
+		config.setOnline(builder.isOnline());
+		config.setOptionValue(ExplodedAppInputOption.NAME, builder.isExplodedApp());
+		config.setOptionValue(SourceModeOption.NAME, builder.isSourceMode());
 	}
 
 	private static void addTempOptions() {
