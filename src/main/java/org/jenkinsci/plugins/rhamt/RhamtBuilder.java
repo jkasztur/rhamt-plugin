@@ -80,6 +80,10 @@ public class RhamtBuilder extends Builder {
 	private boolean compatibleFilesReport;
 	@DataBoundSetter
 	private boolean classNotFoundAnalysis;
+	@DataBoundSetter
+	private String includedTags;
+	@DataBoundSetter
+	private String excludedTags;
 
 	@DataBoundConstructor
 	public RhamtBuilder() {
