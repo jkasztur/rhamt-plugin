@@ -4,7 +4,9 @@ jdk:
   - oraclejdk8
 before_install:
   # workaround for travis settings.xml
-- sed -i.bak -e 's|https://repository.apache.org/releases/|https://repository.apache.org/content/repositories/releases/|g' ~/.m2/settings.xml
-- sed -i.bak -e 's|https://nexus.codehaus.org/releases/|https://oss.sonatype.org/content/repositories/releases/|g' ~/.m2/settings.xml
+- cat ~/.m2/settings.xml
+- touch settings.xml
+- echo "<settings></settings>" > emptysettings.xml
 
-script: mvn clean install
+install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -s emptysettings.xml
+script: mvn clean install -s emptysettings.xml
