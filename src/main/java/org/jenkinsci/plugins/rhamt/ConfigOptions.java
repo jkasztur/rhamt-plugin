@@ -2,8 +2,10 @@ package org.jenkinsci.plugins.rhamt;
 
 import org.jboss.windup.config.KeepWorkDirsOption;
 import org.jboss.windup.exec.configuration.WindupConfiguration;
+import org.jboss.windup.exec.configuration.options.ExcludeTagsOption;
 import org.jboss.windup.exec.configuration.options.ExplodedAppInputOption;
 import org.jboss.windup.exec.configuration.options.ExportCSVOption;
+import org.jboss.windup.exec.configuration.options.IncludeTagsOption;
 import org.jboss.windup.exec.configuration.options.OnlineModeOption;
 import org.jboss.windup.exec.configuration.options.OverwriteOption;
 import org.jboss.windup.exec.configuration.options.SourceOption;
@@ -54,6 +56,8 @@ public final class ConfigOptions {
 		addExcludedPackages(builder);
 		addBooleanParameters(builder);
 		addMavenizeParameters(builder);
+		addIncludedTags(builder);
+		addExcludedTags(builder);
 		listener.getLogger().println("============================================");
 		return config;
 	}
@@ -132,6 +136,15 @@ public final class ConfigOptions {
 		setBoolParam(EnableClassNotFoundAnalysisOption.NAME, builder.isClassNotFoundAnalysis());
 	}
 
+	private static void addIncludedTags(RhamtBuilder builder) {
+		setArrayParam(IncludeTagsOption.NAME, builder.getIncludedTags());
+	}
+
+	private static void addExcludedTags(RhamtBuilder builder) {
+		setArrayParam(ExcludeTagsOption.NAME, builder.getExcludedTags());
+	}
+
+	// Helper methods
 	private static void addMavenizeParameters(RhamtBuilder builder) {
 		setBoolParam(MavenizeOption.NAME, builder.isMavenize());
 		setStringParam(MavenizeGroupIdOption.NAME, builder.getMavenizeGroupId());
@@ -155,7 +168,7 @@ public final class ConfigOptions {
 			return;
 		}
 
-		String[] splitted = raw.split(",");
+		String[] splitted = raw.split("[,\\s]+");
 		listener.getLogger().println(String.format("Setting %s: %s", keyName, Arrays.toString(splitted)));
 		config.setOptionValue(keyName, Arrays.asList(splitted));
 	}
