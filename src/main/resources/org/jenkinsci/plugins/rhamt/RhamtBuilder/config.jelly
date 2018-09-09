@@ -54,4 +54,7 @@
 	<f:entry title="Export CSV" field="exportCsv">
 		<f:checkbox default="false"/>
 	</f:entry>
+	<f:entry title="Keep work directories CSV" field="keepWorkDirs">
+		<f:checkbox default="false"/>
+	</f:entry>
 </j:jelly>

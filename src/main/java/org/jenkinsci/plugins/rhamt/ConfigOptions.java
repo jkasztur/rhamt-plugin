@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.rhamt;
 
+import org.jboss.windup.config.KeepWorkDirsOption;
 import org.jboss.windup.exec.configuration.WindupConfiguration;
 import org.jboss.windup.exec.configuration.options.ExplodedAppInputOption;
 import org.jboss.windup.exec.configuration.options.ExportCSVOption;
@@ -124,6 +125,7 @@ public final class ConfigOptions {
 		setBoolParam(SourceModeOption.NAME, builder.isSourceMode());
 		setBoolParam(EnableTattletaleReportOption.NAME, builder.isEnableTattletale());
 		setBoolParam(ExportCSVOption.NAME, builder.isExportCsv());
+		setBoolParam(KeepWorkDirsOption.NAME, builder.isKeepWorkDirs());
 	}
 
 	private static void addMavenizeParameters(RhamtBuilder builder) {

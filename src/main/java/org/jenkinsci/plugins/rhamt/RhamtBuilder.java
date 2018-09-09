@@ -74,6 +74,8 @@ public class RhamtBuilder extends Builder {
 	private boolean enableTattletale;
 	@DataBoundSetter
 	private boolean exportCsv;
+	@DataBoundSetter
+	private boolean keepWorkDirs;
 
 	@DataBoundConstructor
 	public RhamtBuilder() {
