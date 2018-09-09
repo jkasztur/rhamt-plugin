@@ -4,6 +4,7 @@ jdk:
   - oraclejdk8
 before_install:
   # workaround for travis settings.xml
-  - sed -i.bak -e 's|https://nexus.codehaus.org/releases/|https://oss.sonatype.org/content/repositories/releases/|g' ~/.m2/settings.xml
+- sed -i.bak -e 's|https://repository.apache.org/releases/|https://repository.apache.org/content/repositories/releases/|g' ~/.m2/settings.xml
+- sed -i.bak -e 's|https://nexus.codehaus.org/releases/|https://oss.sonatype.org/content/repositories/releases/|g' ~/.m2/settings.xml
 
 script: mvn clean install

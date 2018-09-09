@@ -10,6 +10,7 @@ import org.jboss.windup.rules.apps.java.config.ScanPackagesOption;
 import org.jboss.windup.rules.apps.java.config.SourceModeOption;
 import org.jboss.windup.rules.apps.mavenize.MavenizeGroupIdOption;
 import org.jboss.windup.rules.apps.mavenize.MavenizeOption;
+import org.jboss.windup.rules.apps.tattletale.EnableTattletaleReportOption;
 import org.jboss.windup.util.PathUtil;
 
 import org.jenkinsci.plugins.rhamt.monitor.JenkinsProgressMonitor;
@@ -117,6 +118,7 @@ public final class ConfigOptions {
 		config.setOnline(builder.isOnline());
 		config.setOptionValue(ExplodedAppInputOption.NAME, builder.isExplodedApp());
 		config.setOptionValue(SourceModeOption.NAME, builder.isSourceMode());
+		config.setOptionValue(EnableTattletaleReportOption.NAME, builder.isEnableTattletale());
 	}
 
 	private static void addMavenizeParameters(RhamtBuilder builder) {

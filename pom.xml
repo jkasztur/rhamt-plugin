@@ -42,7 +42,6 @@
 				<scope>import</scope>
 				<type>pom</type>
 			</dependency>
-
 		</dependencies>
 	</dependencyManagement>
 
@@ -56,7 +55,11 @@
 			<groupId>org.jboss.forge.furnace</groupId>
 			<artifactId>furnace-se</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.jboss.windup.rules.apps</groupId>
+			<artifactId>windup-rules-tattletale</artifactId>
+			<classifier>forge-addon</classifier>
+		</dependency>
 		<!-- Additional -->
 		<dependency>
 			<groupId>xml-apis</groupId>
