@@ -107,6 +107,13 @@
 				<enabled>true</enabled>
 			</releases>
 		</repository>
+		<repository>
+			<id>jboss-public</id>
+			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
@@ -116,6 +123,13 @@
 		<pluginRepository>
 			<id>central</id>
 			<url>http://central.maven.org/maven2</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</pluginRepository>
+		<pluginRepository>
+			<id>jboss-public</id>
+			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
