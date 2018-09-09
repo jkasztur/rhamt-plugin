@@ -2,6 +2,8 @@ package org.jenkinsci.plugins.rhamt;
 
 import org.jboss.windup.exec.configuration.WindupConfiguration;
 import org.jboss.windup.exec.configuration.options.ExplodedAppInputOption;
+import org.jboss.windup.exec.configuration.options.ExportCSVOption;
+import org.jboss.windup.exec.configuration.options.OnlineModeOption;
 import org.jboss.windup.exec.configuration.options.OverwriteOption;
 import org.jboss.windup.exec.configuration.options.SourceOption;
 import org.jboss.windup.exec.configuration.options.TargetOption;
@@ -38,6 +40,7 @@ public final class ConfigOptions {
 		workspace = w;
 		listener = buildListener;
 
+		listener.getLogger().println("================= SETTINGS =================");
 		addInput(builder);
 		addOutput(builder);
 		addSource(builder);
@@ -48,6 +51,7 @@ public final class ConfigOptions {
 		addExcludedPackages(builder);
 		addBooleanParameters(builder);
 		addMavenizeParameters(builder);
+		listener.getLogger().println("============================================");
 		return config;
 	}
 
@@ -115,15 +119,21 @@ public final class ConfigOptions {
 	}
 
 	private static void addBooleanParameters(RhamtBuilder builder) {
-		config.setOnline(builder.isOnline());
-		config.setOptionValue(ExplodedAppInputOption.NAME, builder.isExplodedApp());
-		config.setOptionValue(SourceModeOption.NAME, builder.isSourceMode());
-		config.setOptionValue(EnableTattletaleReportOption.NAME, builder.isEnableTattletale());
+		setBoolParam(OnlineModeOption.NAME, builder.isOnline());
+		setBoolParam(ExplodedAppInputOption.NAME, builder.isExplodedApp());
+		setBoolParam(SourceModeOption.NAME, builder.isSourceMode());
+		setBoolParam(EnableTattletaleReportOption.NAME, builder.isEnableTattletale());
+		setBoolParam(ExportCSVOption.NAME, builder.isExportCsv());
 	}
 
 	private static void addMavenizeParameters(RhamtBuilder builder) {
-		config.setOptionValue(MavenizeOption.NAME, builder.isMavenize());
+		setBoolParam(MavenizeOption.NAME, builder.isMavenize());
 		setStringParam(MavenizeGroupIdOption.NAME, builder.getMavenizeGroupId());
+	}
+
+	private static void setBoolParam(String keyName, boolean value) {
+		listener.getLogger().println(String.format("Setting %s: %b", keyName, value));
+		config.setOptionValue(keyName, value);
 	}
 
 	private static void setStringParam(String keyName, String value) {

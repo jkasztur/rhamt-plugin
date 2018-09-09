@@ -72,6 +72,8 @@ public class RhamtBuilder extends Builder {
 	private String mavenizeGroupId;
 	@DataBoundSetter
 	private boolean enableTattletale;
+	@DataBoundSetter
+	private boolean exportCsv;
 
 	@DataBoundConstructor
 	public RhamtBuilder() {

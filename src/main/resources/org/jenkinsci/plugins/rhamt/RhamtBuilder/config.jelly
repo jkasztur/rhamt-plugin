@@ -51,4 +51,7 @@
 	<f:entry title="Enable Tattletale" field="enableTattletale">
 		<f:checkbox default="false"/>
 	</f:entry>
+	<f:entry title="Export CSV" field="exportCsv">
+		<f:checkbox default="false"/>
+	</f:entry>
 </j:jelly>
