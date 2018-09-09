@@ -76,6 +76,8 @@ public class RhamtBuilder extends Builder {
 	private boolean exportCsv;
 	@DataBoundSetter
 	private boolean keepWorkDirs;
+	@DataBoundSetter
+	private boolean enableCompatibleFilesReport;
 
 	@DataBoundConstructor
 	public RhamtBuilder() {

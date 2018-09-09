@@ -11,6 +11,7 @@ import org.jboss.windup.exec.configuration.options.TargetOption;
 import org.jboss.windup.rules.apps.java.config.ExcludePackagesOption;
 import org.jboss.windup.rules.apps.java.config.ScanPackagesOption;
 import org.jboss.windup.rules.apps.java.config.SourceModeOption;
+import org.jboss.windup.rules.apps.java.reporting.rules.EnableCompatibleFilesReportOption;
 import org.jboss.windup.rules.apps.mavenize.MavenizeGroupIdOption;
 import org.jboss.windup.rules.apps.mavenize.MavenizeOption;
 import org.jboss.windup.rules.apps.tattletale.EnableTattletaleReportOption;
@@ -126,6 +127,7 @@ public final class ConfigOptions {
 		setBoolParam(EnableTattletaleReportOption.NAME, builder.isEnableTattletale());
 		setBoolParam(ExportCSVOption.NAME, builder.isExportCsv());
 		setBoolParam(KeepWorkDirsOption.NAME, builder.isKeepWorkDirs());
+		setBoolParam(EnableCompatibleFilesReportOption.NAME, builder.isEnableCompatibleFilesReport());
 	}
 
 	private static void addMavenizeParameters(RhamtBuilder builder) {
