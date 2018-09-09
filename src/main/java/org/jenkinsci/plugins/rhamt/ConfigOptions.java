@@ -8,6 +8,7 @@ import org.jboss.windup.exec.configuration.options.OnlineModeOption;
 import org.jboss.windup.exec.configuration.options.OverwriteOption;
 import org.jboss.windup.exec.configuration.options.SourceOption;
 import org.jboss.windup.exec.configuration.options.TargetOption;
+import org.jboss.windup.rules.apps.java.config.EnableClassNotFoundAnalysisOption;
 import org.jboss.windup.rules.apps.java.config.ExcludePackagesOption;
 import org.jboss.windup.rules.apps.java.config.ScanPackagesOption;
 import org.jboss.windup.rules.apps.java.config.SourceModeOption;
@@ -124,10 +125,11 @@ public final class ConfigOptions {
 		setBoolParam(OnlineModeOption.NAME, builder.isOnline());
 		setBoolParam(ExplodedAppInputOption.NAME, builder.isExplodedApp());
 		setBoolParam(SourceModeOption.NAME, builder.isSourceMode());
-		setBoolParam(EnableTattletaleReportOption.NAME, builder.isEnableTattletale());
+		setBoolParam(EnableTattletaleReportOption.NAME, builder.isTattletale());
 		setBoolParam(ExportCSVOption.NAME, builder.isExportCsv());
 		setBoolParam(KeepWorkDirsOption.NAME, builder.isKeepWorkDirs());
-		setBoolParam(EnableCompatibleFilesReportOption.NAME, builder.isEnableCompatibleFilesReport());
+		setBoolParam(EnableCompatibleFilesReportOption.NAME, builder.isCompatibleFilesReport());
+		setBoolParam(EnableClassNotFoundAnalysisOption.NAME, builder.isClassNotFoundAnalysis());
 	}
 
 	private static void addMavenizeParameters(RhamtBuilder builder) {

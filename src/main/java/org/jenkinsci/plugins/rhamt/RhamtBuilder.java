@@ -71,13 +71,15 @@ public class RhamtBuilder extends Builder {
 	@DataBoundSetter
 	private String mavenizeGroupId;
 	@DataBoundSetter
-	private boolean enableTattletale;
+	private boolean tattletale;
 	@DataBoundSetter
 	private boolean exportCsv;
 	@DataBoundSetter
 	private boolean keepWorkDirs;
 	@DataBoundSetter
-	private boolean enableCompatibleFilesReport;
+	private boolean compatibleFilesReport;
+	@DataBoundSetter
+	private boolean classNotFoundAnalysis;
 
 	@DataBoundConstructor
 	public RhamtBuilder() {
