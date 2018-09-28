@@ -84,6 +84,8 @@ public class RhamtBuilder extends Builder {
 	private String excludedTags;
 	@DataBoundSetter
 	private String additionalClasspath;
+	@DataBoundSetter
+	private String userIgnorePath;
 
 	@DataBoundConstructor
 	public RhamtBuilder() {

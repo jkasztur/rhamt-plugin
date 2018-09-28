@@ -66,4 +66,7 @@
 	<f:entry title="Additional classpath" field="additionalClasspath">
 		<f:textbox/>
 	</f:entry>
+	<f:entry title="User ignore path" field="userIgnorePath">
+		<f:textbox/>
+	</f:entry>
 </j:jelly>

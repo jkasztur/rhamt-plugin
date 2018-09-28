@@ -60,6 +60,7 @@ public final class ConfigOptions {
 		addIncludedTags(builder);
 		addExcludedTags(builder);
 		addAdditionalClasspath(builder);
+		addUserIgnorePath(builder);
 		listener.getLogger().println("============================================");
 		return config;
 	}
@@ -129,6 +130,18 @@ public final class ConfigOptions {
 
 	private static void addAdditionalClasspath(RhamtBuilder builder) {
 		setArrayParam(AdditionalClasspathOption.NAME, builder.getAdditionalClasspath());
+	}
+
+	private static void addUserIgnorePath(RhamtBuilder builder) {
+		// Always adding default user ignore dir
+		config.addDefaultUserIgnorePath(PathUtil.getUserIgnoreDir());
+		final String ignorePath = builder.getUserIgnorePath();
+		if (ignorePath == null || ignorePath.trim().equals("")) {
+			return;
+		}
+		final File ignorePathDir = new File(ignorePath);
+		config.addDefaultUserIgnorePath(ignorePathDir.toPath());
+		listener.getLogger().println("Setting user rules directory: " + ignorePathDir.getAbsolutePath());
 	}
 
 	private static void addBooleanParameters(RhamtBuilder builder) {
