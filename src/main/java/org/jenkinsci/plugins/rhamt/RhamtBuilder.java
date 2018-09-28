@@ -49,8 +49,6 @@ public class RhamtBuilder extends Builder {
 	@DataBoundSetter
 	private String output;
 	@DataBoundSetter
-	private String altParams;
-	@DataBoundSetter
 	private String source;
 	@DataBoundSetter
 	private String target;
@@ -84,6 +82,10 @@ public class RhamtBuilder extends Builder {
 	private String includedTags;
 	@DataBoundSetter
 	private String excludedTags;
+	@DataBoundSetter
+	private String additionalClasspath;
+	@DataBoundSetter
+	private String userIgnorePath;
 
 	@DataBoundConstructor
 	public RhamtBuilder() {
@@ -252,11 +254,6 @@ public class RhamtBuilder extends Builder {
 
 		public FormValidation doCheckOutput(@QueryParameter String value) {
 			return InputOutputCheck.checkOutput(value);
-		}
-
-		// TODO(jkasztur): check alt params
-		public FormValidation doCheckAltParams(@QueryParameter String value) {
-			return FormValidation.ok();
 		}
 	}
 }

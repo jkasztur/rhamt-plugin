@@ -10,6 +10,7 @@ import org.jboss.windup.exec.configuration.options.OnlineModeOption;
 import org.jboss.windup.exec.configuration.options.OverwriteOption;
 import org.jboss.windup.exec.configuration.options.SourceOption;
 import org.jboss.windup.exec.configuration.options.TargetOption;
+import org.jboss.windup.rules.apps.java.config.AdditionalClasspathOption;
 import org.jboss.windup.rules.apps.java.config.EnableClassNotFoundAnalysisOption;
 import org.jboss.windup.rules.apps.java.config.ExcludePackagesOption;
 import org.jboss.windup.rules.apps.java.config.ScanPackagesOption;
@@ -58,6 +59,8 @@ public final class ConfigOptions {
 		addMavenizeParameters(builder);
 		addIncludedTags(builder);
 		addExcludedTags(builder);
+		addAdditionalClasspath(builder);
+		addUserIgnorePath(builder);
 		listener.getLogger().println("============================================");
 		return config;
 	}
@@ -125,6 +128,22 @@ public final class ConfigOptions {
 		setArrayParam(ExcludePackagesOption.NAME, builder.getExcludedPackages());
 	}
 
+	private static void addAdditionalClasspath(RhamtBuilder builder) {
+		setArrayParam(AdditionalClasspathOption.NAME, builder.getAdditionalClasspath());
+	}
+
+	private static void addUserIgnorePath(RhamtBuilder builder) {
+		// Always adding default user ignore dir
+		config.addDefaultUserIgnorePath(PathUtil.getUserIgnoreDir());
+		final String ignorePath = builder.getUserIgnorePath();
+		if (ignorePath == null || ignorePath.trim().equals("")) {
+			return;
+		}
+		final File ignorePathDir = new File(ignorePath);
+		config.addDefaultUserIgnorePath(ignorePathDir.toPath());
+		listener.getLogger().println("Setting user rules directory: " + ignorePathDir.getAbsolutePath());
+	}
+
 	private static void addBooleanParameters(RhamtBuilder builder) {
 		setBoolParam(OnlineModeOption.NAME, builder.isOnline());
 		setBoolParam(ExplodedAppInputOption.NAME, builder.isExplodedApp());
@@ -168,7 +187,7 @@ public final class ConfigOptions {
 			return;
 		}
 
-		String[] splitted = raw.split("[,\\s]+");
+		final String[] splitted = raw.split("[,\\s]+");
 		listener.getLogger().println(String.format("Setting %s: %s", keyName, Arrays.toString(splitted)));
 		config.setOptionValue(keyName, Arrays.asList(splitted));
 	}

@@ -21,16 +21,10 @@
 	<f:entry title="User rules directory" field="userRulesDir">
 		<f:textbox/>
 	</f:entry>
-
 	<f:entry title="Packages" field="packages">
 		<f:textbox/>
 	</f:entry>
-
 	<f:entry title="Excluded packages" field="excludedPackages">
-		<f:textbox/>
-	</f:entry>
-
-	<f:entry title="Additional options" field="altParams">
 		<f:textbox/>
 	</f:entry>
 	<f:entry title="Online" field="online">
@@ -67,6 +61,12 @@
 		<f:textbox/>
 	</f:entry>
 	<f:entry title="Excluded tags" field="excludedTags">
+		<f:textbox/>
+	</f:entry>
+	<f:entry title="Additional classpath" field="additionalClasspath">
+		<f:textbox/>
+	</f:entry>
+	<f:entry title="User ignore path" field="userIgnorePath">
 		<f:textbox/>
 	</f:entry>
 </j:jelly>
