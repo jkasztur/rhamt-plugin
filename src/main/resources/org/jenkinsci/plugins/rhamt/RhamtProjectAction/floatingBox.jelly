@@ -1,0 +1,21 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core">
+
+	<j:set var="reports" value="${from.getLastBuildReports()}"/>
+	<j:if test="${reports != null}">
+		<h3>RHAMT Last build analysis</h3>
+		<table border="1">
+			<tr>
+				<td>Application name</td>
+				<td>Story points</td>
+			</tr>
+			<j:set var="reports" value="${from.getLastBuildReports()}"/>
+			<j:forEach var="report" items="${reports}">
+				<tr>
+					<td>${report.getAppName()}</td>
+					<td align="right">${report.getStoryPoints()}</td>
+				</tr>
+			</j:forEach>
+		</table>
+	</j:if>
+</j:jelly>

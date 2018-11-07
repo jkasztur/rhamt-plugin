@@ -1,0 +1,14 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
+		xmlns:l="/lib/layout">
+	<l:layout title="Migration Metric Trend">
+		<st:include it="${it.project}" page="sidepanel.jelly"/>
+		<l:main-panel>
+			<j:set var="apps" value="${it.getAllApps()}"/>
+			<j:forEach var="app" items="${apps}">
+				<img id="appGraph" src="./graphForApp?appName=${app}"/>
+			</j:forEach>
+
+		</l:main-panel>
+	</l:layout>
+</j:jelly>
