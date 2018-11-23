@@ -18,55 +18,57 @@
 	</f:entry>
 	<f:validateButton method="reloadTarget" title="Reload targets" progress="${%Reloading...}"/>
 
-	<f:entry title="User rules directory" field="userRulesDir">
-		<f:textbox/>
-	</f:entry>
-	<f:entry title="Packages" field="packages">
-		<f:textbox/>
-	</f:entry>
-	<f:entry title="Excluded packages" field="excludedPackages">
-		<f:textbox/>
-	</f:entry>
-	<f:entry title="Online" field="online">
-		<f:checkbox default="false"/>
-	</f:entry>
-	<f:entry title="Source mode" field="sourceMode">
-		<f:checkbox default="false"/>
-	</f:entry>
-	<f:entry title="Exploded app" field="explodedApp">
-		<f:checkbox default="true"/>
-	</f:entry>
-	<f:entry title="Mavenize" field="mavenize">
-		<f:checkbox default="false"/>
-	</f:entry>
-	<f:entry title="Mavenize groupId" field="mavenizeGroupId">
-		<f:textbox/>
-	</f:entry>
-	<f:entry title="Tattletale" field="tattletale">
-		<f:checkbox default="false"/>
-	</f:entry>
-	<f:entry title="Export CSV" field="exportCsv">
-		<f:checkbox default="false"/>
-	</f:entry>
-	<f:entry title="Keep work directories" field="keepWorkDirs">
-		<f:checkbox default="false"/>
-	</f:entry>
-	<f:entry title="Compatible files report" field="compatibleFilesReport">
-		<f:checkbox default="false"/>
-	</f:entry>
-	<f:entry title="ClassNotFound analysis" field="classNotFoundAnalysis">
-		<f:checkbox default="false"/>
-	</f:entry>
-	<f:entry title="Included tags" field="includedTags">
-		<f:textbox/>
-	</f:entry>
-	<f:entry title="Excluded tags" field="excludedTags">
-		<f:textbox/>
-	</f:entry>
-	<f:entry title="Additional classpath" field="additionalClasspath">
-		<f:textbox/>
-	</f:entry>
-	<f:entry title="User ignore path" field="userIgnorePath">
-		<f:textbox/>
-	</f:entry>
+	<f:advanced>
+		<f:entry title="User rules directory" field="userRulesDir">
+			<f:textbox/>
+		</f:entry>
+		<f:entry title="Packages" field="packages">
+			<f:textbox/>
+		</f:entry>
+		<f:entry title="Excluded packages" field="excludedPackages">
+			<f:textbox/>
+		</f:entry>
+		<f:entry title="Online" field="online">
+			<f:checkbox default="false"/>
+		</f:entry>
+		<f:entry title="Source mode" field="sourceMode">
+			<f:checkbox default="false"/>
+		</f:entry>
+		<f:entry title="Exploded app" field="explodedApp">
+			<f:checkbox default="true"/>
+		</f:entry>
+		<f:entry title="Mavenize" field="mavenize">
+			<f:checkbox default="false"/>
+		</f:entry>
+		<f:entry title="Mavenize groupId" field="mavenizeGroupId">
+			<f:textbox/>
+		</f:entry>
+		<f:entry title="Tattletale" field="tattletale">
+			<f:checkbox default="false"/>
+		</f:entry>
+		<f:entry title="Export CSV" field="exportCsv">
+			<f:checkbox default="false"/>
+		</f:entry>
+		<f:entry title="Keep work directories" field="keepWorkDirs">
+			<f:checkbox default="false"/>
+		</f:entry>
+		<f:entry title="Compatible files report" field="compatibleFilesReport">
+			<f:checkbox default="false"/>
+		</f:entry>
+		<f:entry title="ClassNotFound analysis" field="classNotFoundAnalysis">
+			<f:checkbox default="false"/>
+		</f:entry>
+		<f:entry title="Included tags" field="includedTags">
+			<f:textbox/>
+		</f:entry>
+		<f:entry title="Excluded tags" field="excludedTags">
+			<f:textbox/>
+		</f:entry>
+		<f:entry title="Additional classpath" field="additionalClasspath">
+			<f:textbox/>
+		</f:entry>
+		<f:entry title="User ignore path" field="userIgnorePath">
+			<f:textbox/>
+		</f:entry>
+	</f:advanced>
 </j:jelly>

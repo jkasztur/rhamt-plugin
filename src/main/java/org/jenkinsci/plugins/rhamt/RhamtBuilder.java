@@ -179,7 +179,7 @@ public class RhamtBuilder extends Builder {
 			if (sourceItems != null) {
 				return sourceItems;
 			}
-			ListBoxModel list = new ListBoxModel();
+			final ListBoxModel list = new ListBoxModel();
 			try {
 				list.addAll(TechnologyOptions.getTechnologies(rhamtHome, Technology.SOURCE));
 				sourceItems = list;
@@ -206,7 +206,7 @@ public class RhamtBuilder extends Builder {
 			if (targetItems != null) {
 				return targetItems;
 			}
-			ListBoxModel list = new ListBoxModel();
+			final ListBoxModel list = new ListBoxModel();
 			try {
 				list.addAll(TechnologyOptions.getTechnologies(rhamtHome, Technology.TARGET));
 				targetItems = list;
@@ -231,14 +231,14 @@ public class RhamtBuilder extends Builder {
 			if (value == null || value.trim().equals(""))
 				return FormValidation.warning("No directory specified.");
 
-			File ftmp = new File(value);
+			final File ftmp = new File(value);
 
 			if (!ftmp.exists())
 				return FormValidation.error("Specified directory not found.");
 			if (!ftmp.isDirectory())
 				return FormValidation.error("Not a directory.");
 
-			File exec = new File(ftmp, "bin/rhamt-cli");
+			final File exec = new File(ftmp, "bin/rhamt-cli");
 
 			if (!exec.exists())
 				return FormValidation.error("bin/rhamt-cli script does not exist in RHAMT home");
