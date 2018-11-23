@@ -39,6 +39,9 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 
+/**
+ * Class implementing Jenkins build step.
+ */
 @Slf4j
 @Getter
 @Setter
@@ -91,12 +94,23 @@ public class RhamtBuilder extends Builder {
 	public RhamtBuilder() {
 	}
 
+	/**
+	 * The perform method executes RHAMT with given options.
+	 *
+	 * @param build current build
+	 * @param launcher Jenkins launcher
+	 * @param listener build listener
+	 * @return true if successful, false if a problem occurred.
+	 * @throws IOException exception
+	 * @throws InterruptedException exception
+	 */
 	@Override
 	public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
 		final String rhamtHome = getDescriptor().getRhamtHome();
 		if (rhamtHome == null || rhamtHome.trim().isEmpty()) {
 			throw new WindupException("RHAMT home is not set.");
 		}
+		// WINDUP_HOME must be set for Furnace
 		System.setProperty(PathUtil.WINDUP_HOME, getDescriptor().getRhamtHome());
 		Furnace furnace = null;
 		try {
@@ -111,18 +125,26 @@ public class RhamtBuilder extends Builder {
 
 			config.setGraphContext(graphContext);
 			windupProcessor.execute(config);
-			// TODO: fix link logging
-			listener.getLogger().println("See output at: file://" + config.getOutputDirectory().toString() + "/index.html");
+			listener.getLogger().println("HTML Report is located at: " + config.getOutputDirectory().toString() + "/index.html");
 		} catch (ExecutionException e) {
 			e.printStackTrace();
 		} finally {
 			if (furnace != null) {
 				furnace.close();
 			}
+			System.clearProperty(PathUtil.WINDUP_HOME);
+			System.clearProperty("INTERACTIVE");
 		}
 		return true;
 	}
 
+	/**
+	 * Prepares Furnace with addons from RHAMT_HOME.
+	 *
+	 * @return started Furnace object
+	 * @throws ExecutionException exception
+	 * @throws InterruptedException exception
+	 */
 	private Furnace createAndStartFurnace() throws ExecutionException, InterruptedException {
 		final Furnace furnace = FurnaceFactory.getInstance();
 		furnace.addRepository(AddonRepositoryMode.MUTABLE, new File(getDescriptor().getRhamtHome(), "addons"));
@@ -141,6 +163,9 @@ public class RhamtBuilder extends Builder {
 	public static class Descriptor extends BuildStepDescriptor<Builder> {
 
 		private String rhamtHome;
+
+		private ListBoxModel sourceItems = null;
+		private ListBoxModel targetItems = null;
 
 		public Descriptor() {
 			load();
@@ -173,8 +198,6 @@ public class RhamtBuilder extends Builder {
 			return true;
 		}
 
-		private ListBoxModel sourceItems = null;
-
 		public ListBoxModel doFillSourceItems() {
 			if (sourceItems != null) {
 				return sourceItems;
@@ -199,8 +222,6 @@ public class RhamtBuilder extends Builder {
 			}
 			return FormValidation.ok("Reload successful");
 		}
-
-		private ListBoxModel targetItems = null;
 
 		public ListBoxModel doFillTargetItems() {
 			if (targetItems != null) {

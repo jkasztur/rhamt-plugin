@@ -7,6 +7,9 @@ import org.jenkinsci.plugins.rhamt.util.MetricUtil;
 import hudson.FilePath;
 import lombok.Getter;
 
+/**
+ * Stores single report.
+ */
 @Getter
 public class RhamtReport {
 	private final String appName;

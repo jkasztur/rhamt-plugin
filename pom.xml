@@ -97,7 +97,7 @@
 		</profile>
 		<profile>
 			<!-- empty profile, will run all tests -->
-			<id>int-tests</id>
+			<id>it-tests</id>
 		</profile>
 	</profiles>
 

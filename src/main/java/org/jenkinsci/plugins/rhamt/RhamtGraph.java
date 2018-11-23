@@ -11,6 +11,9 @@ import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
 import hudson.util.Graph;
 
+/**
+ * Graph implementation that shows metric based on RHAMT Story Points
+ */
 public class RhamtGraph extends Graph {
 	private String name;
 	private Map<ChartUtil.NumberOnlyBuildLabel, Integer> reports;

@@ -7,6 +7,9 @@ import java.util.Set;
 import hudson.model.Action;
 import lombok.Getter;
 
+/**
+ * Action used to store RHAMT reports for a single build.
+ */
 public class RhamtBuildAction implements Action {
 
 	@Getter

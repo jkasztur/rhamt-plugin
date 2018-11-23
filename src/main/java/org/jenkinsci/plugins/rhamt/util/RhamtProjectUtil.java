@@ -14,7 +14,10 @@ import hudson.model.AbstractProject;
 import hudson.model.Run;
 import hudson.util.ChartUtil;
 
-public class RhamtProjectUtil {
+public final class RhamtProjectUtil {
+
+	private RhamtProjectUtil() {
+	}
 
 	public static Set<String> getExistingAppNames(AbstractProject<?, ?> project) {
 		final Set<String> set = new HashSet<>();
