@@ -3,7 +3,7 @@ package org.jenkinsci.plugins.rhamt;
 import lombok.Getter;
 
 public enum Technology {
-	SOURCE("Source"), TARGET("Target");
+	SOURCE("source"), TARGET("target");
 
 	@Getter
 	private final String arg;

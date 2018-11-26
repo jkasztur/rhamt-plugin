@@ -206,7 +206,7 @@ public class RhamtBuilder extends Builder {
 			try {
 				list.addAll(TechnologyOptions.getTechnologies(rhamtHome, Technology.SOURCE));
 				sourceItems = list;
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 				return new ListBoxModel();
 			}
@@ -231,7 +231,7 @@ public class RhamtBuilder extends Builder {
 			try {
 				list.addAll(TechnologyOptions.getTechnologies(rhamtHome, Technology.TARGET));
 				targetItems = list;
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 				return new ListBoxModel();
 			}
