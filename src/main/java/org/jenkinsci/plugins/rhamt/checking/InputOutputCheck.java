@@ -4,13 +4,16 @@ import java.io.File;
 
 import hudson.util.FormValidation;
 
-public class InputOutputCheck {
+public final class InputOutputCheck {
+
+	private InputOutputCheck() {
+	}
 
 	public static FormValidation checkInput(String value) {
 		if (value == null || value.trim().equals(""))
 			return FormValidation.error("No input specified");
 
-		String[] inputs = value.split(",");
+		final String[] inputs = value.split(",");
 		for (String input : inputs) {
 			final File inputFile = new File(input);
 			if (!inputFile.exists()) {

@@ -7,7 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +15,11 @@ import hudson.util.ListBoxModel;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class TechnologyOptions {
+public final class TechnologyOptions {
+
+	private TechnologyOptions() {
+
+	}
 
 	private static File scriptFile = null;
 	private static String rhamtHome = null;
@@ -41,7 +45,7 @@ public class TechnologyOptions {
 	public static List<ListBoxModel.Option> getTechnologies(String home, Technology arg) throws IOException {
 		final List<ListBoxModel.Option> options = new ArrayList<>();
 
-		String techPath;
+		final String techPath;
 
 		switch (arg) {
 			case SOURCE:
@@ -63,7 +67,7 @@ public class TechnologyOptions {
 				return options;
 		}
 
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(techPath), "UTF-8"))) {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(techPath), StandardCharsets.UTF_8))) {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				options.add(new ListBoxModel.Option(line));
@@ -77,12 +81,12 @@ public class TechnologyOptions {
 		setScript(home);
 		final ProcessBuilder pb = new ProcessBuilder(scriptFile.getAbsolutePath(), "--list" + arg.getArg() + "Technologies");
 
-		Process process;
-		String result;
+		final Process process;
+		final String result;
 
 		process = pb.start();
 		final BufferedReader reader =
-				new BufferedReader(new InputStreamReader(process.getInputStream(), Charset.defaultCharset()));
+				new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
 		final StringBuilder builder = new StringBuilder();
 		String line;
 		while ((line = reader.readLine()) != null) {
@@ -95,8 +99,8 @@ public class TechnologyOptions {
 		final String techs = result.split("Available " + arg.getArg().toLowerCase() + " technologies:")[1];
 
 		final File techFile = new File(rhamtHome, "jenkins-plugin/" + arg.getArg().toLowerCase());
-		if(techFile.exists()) {
-			boolean deleteResult = techFile.delete();
+		if (techFile.exists()) {
+			boolean ret = techFile.delete();
 			log.info("Old " + arg.getArg().toLowerCase() + " was deleted.");
 		}
 		final boolean fileResult = techFile.createNewFile();
@@ -104,9 +108,9 @@ public class TechnologyOptions {
 			log.error(techFile.getAbsolutePath() + " was not created.");
 			throw new IOException(techFile.getAbsolutePath() + " was not created.");
 		}
-		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(techFile, false), "UTF-8")) {
+		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(techFile, false), StandardCharsets.UTF_8)) {
 			for (String s : techs.split("\n")) {
-				String source = s.trim();
+				final String source = s.trim();
 				if ("".equals(source)) {
 					continue;
 				}

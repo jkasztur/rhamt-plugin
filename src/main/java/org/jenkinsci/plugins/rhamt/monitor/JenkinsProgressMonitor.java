@@ -8,6 +8,10 @@ import java.util.Date;
 
 import hudson.model.BuildListener;
 
+/**
+ * WindupProgressMonitor implementation modified for Jenkins.
+ * Source: org.jboss.windup.bootstrap.ConsoleProgressMonitor
+ */
 public class JenkinsProgressMonitor implements WindupProgressMonitor {
 	private int totalWork;
 	private int currentWork;
@@ -23,14 +27,13 @@ public class JenkinsProgressMonitor implements WindupProgressMonitor {
 	public void beginTask(String name, int totalWork) {
 		this.totalWork = totalWork;
 
-		String message = String.format("%s [%d/%d] %s", getCachedTime(), currentWork, totalWork, name);
+		final String message = String.format("%s [%d/%d] %s", getCachedTime(), currentWork, totalWork, name);
 		System.out.println(message);
 		listener.getLogger().println(message);
 	}
 
 	@Override
 	public void done() {
-
 	}
 
 	@Override
@@ -45,14 +48,14 @@ public class JenkinsProgressMonitor implements WindupProgressMonitor {
 
 	@Override
 	public void setTaskName(String name) {
-		String message = String.format("%s [%d/%d] %s", getCachedTime(), currentWork, totalWork, name);
+		final String message = String.format("%s [%d/%d] %s", getCachedTime(), currentWork, totalWork, name);
 		System.out.println(message);
 		listener.getLogger().println(message);
 	}
 
 	@Override
 	public void subTask(String subTask) {
-		String message = String.format("%s [%d/%d] %s", getCachedTime(), currentWork, totalWork, subTask);
+		final String message = String.format("%s [%d/%d] %s", getCachedTime(), currentWork, totalWork, subTask);
 		if (subTask.endsWith("\r")) {
 			System.out.print(message);
 		} else {
@@ -71,10 +74,10 @@ public class JenkinsProgressMonitor implements WindupProgressMonitor {
 	private static String lastFormattedString = "";
 
 	private static String getCachedTime() {
-		long now = System.currentTimeMillis();
+		final long now = System.currentTimeMillis();
 		if (now > lastFormatted + 60_000) {
 			Date date = new Date(now);
-			String format;
+			final String format;
 			// SimpleDateFormat is not thread safe.
 			synchronized (DATE_FORMATTER) {
 				format = DATE_FORMATTER.format(date);

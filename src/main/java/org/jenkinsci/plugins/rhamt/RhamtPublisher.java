@@ -23,6 +23,9 @@ import hudson.tasks.Recorder;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Class processing and storing RHAMT reports.
+ */
 public class RhamtPublisher extends Recorder {
 
 	@DataBoundSetter
@@ -51,6 +54,16 @@ public class RhamtPublisher extends Recorder {
 		return new RhamtProjectAction(project);
 	}
 
+	/**
+	 * Scans workspace with given regex and extracts Story Points count from found reports.
+	 *
+	 * @param build current build
+	 * @param launcher Jenkins launcher
+	 * @param listener build listener
+	 * @return true if successful, false if some problem occurred
+	 * @throws IOException exception
+	 * @throws InterruptedException exception
+	 */
 	@Override
 	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
 		final FilePath workspace = build.getWorkspace();

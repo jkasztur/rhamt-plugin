@@ -16,6 +16,10 @@ import hudson.util.ChartUtil;
 import hudson.util.Graph;
 import lombok.Getter;
 
+/**
+ * Action that stores all application names from previous builds.
+ * Also adds Migration Metric Trend node to project.
+ */
 public class RhamtProjectAction implements Action {
 
 	private final AbstractProject<?, ?> project;
@@ -49,10 +53,22 @@ public class RhamtProjectAction implements Action {
 		return this.project;
 	}
 
+	/**
+	 * Used in floatingBox.jelly.
+	 *
+	 * @return set with RHAMT reports from last build
+	 */
 	public Set<RhamtReport> getLastBuildReports() {
 		return RhamtProjectUtil.getLastReports(project);
 	}
 
+	/**
+	 * Used in config.jelly.
+	 *
+	 * @param request request
+	 * @param response response
+	 * @throws IOException exception
+	 */
 	public void doGraphForApp(StaplerRequest request, StaplerResponse response) throws IOException {
 		final String app = request.getParameter("appName");
 

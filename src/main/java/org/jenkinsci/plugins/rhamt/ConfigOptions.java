@@ -33,8 +33,14 @@ import hudson.FilePath;
 import hudson.model.BuildListener;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Helper class for setting configuration from RhamtBuilder on WindupConfiguration.
+ */
 @Slf4j
 public final class ConfigOptions {
+
+	private ConfigOptions() {
+	}
 
 	private static WindupConfiguration config;
 	private static FilePath workspace;
@@ -66,12 +72,12 @@ public final class ConfigOptions {
 	}
 
 	private static void addProgressMonitor() {
-		JenkinsProgressMonitor monitor = new JenkinsProgressMonitor(listener);
+		final JenkinsProgressMonitor monitor = new JenkinsProgressMonitor(listener);
 		config.setProgressMonitor(monitor);
 	}
 
 	private static void addInput(RhamtBuilder builder) {
-		String input = builder.getInput();
+		final String input = builder.getInput();
 		if (input == null || input.trim().equals("")) {
 			return;
 		}
@@ -84,11 +90,12 @@ public final class ConfigOptions {
 
 	private static void addOutput(RhamtBuilder builder) throws IOException, InterruptedException {
 		final String output = builder.getOutput();
+		final URI outputUri;
 		if (output == null || output.trim().equals("")) {
-			// TODO if null set to workspace
-			return;
+			outputUri = workspace.toURI();
+		} else {
+			outputUri = new FilePath(workspace, output).toURI();
 		}
-		final URI outputUri = new FilePath(workspace, output).toURI();
 		final Path outputPath = new File(outputUri).toPath();
 		config.setOutputDirectory(outputPath);
 
@@ -115,7 +122,7 @@ public final class ConfigOptions {
 		if (rulesDir == null || rulesDir.trim().equals("")) {
 			return;
 		}
-		File rulesDirFile = new File(rulesDir);
+		final File rulesDirFile = new File(rulesDir);
 		config.addDefaultUserRulesDirectory(rulesDirFile.toPath());
 		listener.getLogger().println("Setting user rules directory: " + rulesDirFile.getAbsolutePath());
 	}
