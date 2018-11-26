@@ -1,5 +1,14 @@
 package org.jenkinsci.plugins.rhamt;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +18,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import hudson.util.ListBoxModel;
@@ -18,31 +28,16 @@ import lombok.extern.slf4j.Slf4j;
 public final class TechnologyOptions {
 
 	private TechnologyOptions() {
-
 	}
 
-	private static File scriptFile = null;
+	private static final String helpFilePath = "cache/help/help.xml";
+
 	private static String rhamtHome = null;
 	private static String sourceTechPath = null;
 	private static String targetTechPath = null;
 
-	private static void setScript(String home) {
-		if (rhamtHome == null) {
-			rhamtHome = home;
-		}
-		final File pluginFolder = new File(rhamtHome, "jenkins-plugin");
-		if (!pluginFolder.exists()) {
-			final boolean result = pluginFolder.mkdirs();
-			if (!result) {
-				log.warn("jenkins-plugin folder was not created in " + rhamtHome);
-			}
-		}
-
-		// TODO check if windows
-		scriptFile = new File(rhamtHome, "bin/rhamt-cli");
-	}
-
-	public static List<ListBoxModel.Option> getTechnologies(String home, Technology arg) throws IOException {
+	public static List<ListBoxModel.Option> getTechnologies(String home, Technology arg) throws Exception {
+		rhamtHome = home;
 		final List<ListBoxModel.Option> options = new ArrayList<>();
 
 		final String techPath;
@@ -73,35 +68,31 @@ public final class TechnologyOptions {
 				options.add(new ListBoxModel.Option(line));
 			}
 		}
+		options.sort(Comparator.comparing(o -> o.value));
 
 		return options;
 	}
 
-	public static void reloadTechnology(String home, Technology arg) throws IOException {
-		setScript(home);
-		final ProcessBuilder pb = new ProcessBuilder(scriptFile.getAbsolutePath(), "--list" + arg.getArg() + "Technologies");
+	public static void reloadTechnology(String home, Technology arg) throws Exception {
+		// Find the supported technologies
+		final File helpFile = new File(home, helpFilePath);
+		final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+		final DocumentBuilder builder = domFactory.newDocumentBuilder();
+		final Document domFile = builder.parse(helpFile);
 
-		final Process process;
-		final String result;
+		final XPathExpression xp = XPathFactory.newInstance().newXPath()
+				.compile("//help/option[@name='" + arg.getArg() + "']/available-options/option");
+		final NodeList list = (NodeList) xp.evaluate(domFile, XPathConstants.NODESET);
 
-		process = pb.start();
-		final BufferedReader reader =
-				new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
-		final StringBuilder builder = new StringBuilder();
-		String line;
-		while ((line = reader.readLine()) != null) {
-			builder.append(line);
-			builder.append(System.getProperty("line.separator"));
-		}
-		result = builder.toString();
-		reader.close();
-
-		final String techs = result.split("Available " + arg.getArg().toLowerCase() + " technologies:")[1];
-
+		// Write technologies to file for easier access
 		final File techFile = new File(rhamtHome, "jenkins-plugin/" + arg.getArg().toLowerCase());
 		if (techFile.exists()) {
-			boolean ret = techFile.delete();
-			log.info("Old " + arg.getArg().toLowerCase() + " was deleted.");
+			final boolean ret = techFile.delete();
+			if (ret) {
+				log.info("Old " + arg.getArg().toLowerCase() + " was deleted.");
+			} else {
+				log.warn("Old " + arg.getArg().toLowerCase() + " could not be deleted.");
+			}
 		}
 		final boolean fileResult = techFile.createNewFile();
 		if (!fileResult) {
@@ -109,12 +100,8 @@ public final class TechnologyOptions {
 			throw new IOException(techFile.getAbsolutePath() + " was not created.");
 		}
 		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(techFile, false), StandardCharsets.UTF_8)) {
-			for (String s : techs.split("\n")) {
-				final String source = s.trim();
-				if ("".equals(source)) {
-					continue;
-				}
-				writer.write(source + System.lineSeparator());
+			for (int i = 0; i < list.getLength(); i++) {
+				writer.write(list.item(i).getFirstChild().getNodeValue() + System.lineSeparator());
 			}
 		}
 
