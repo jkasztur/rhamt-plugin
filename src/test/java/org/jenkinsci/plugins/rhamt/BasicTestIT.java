@@ -4,11 +4,11 @@ import org.junit.Test;
 
 import hudson.model.Result;
 
-public class BasicTest extends AbstractRhamtTest {
+public class BasicTestIT extends AbstractRhamtTest {
 
 	@Test
 	public void failWithNullConfig() throws Exception {
-		RhamtBuilder builder = new RhamtBuilder();
+		final RhamtBuilder builder = new RhamtBuilder();
 		builder.getDescriptor().setRhamtHome(rhamtHome);
 
 		project.getBuildersList().add(builder);
@@ -17,7 +17,7 @@ public class BasicTest extends AbstractRhamtTest {
 
 	@Test
 	public void passWithBasicConfig() throws Exception {
-		project.getBuildersList().add(TestHelper.getBasicBuilder(rhamtHome));
+		project.getBuildersList().add(getBasicBuilder(rhamtHome));
 		testBuildResult(Result.SUCCESS);
 	}
 }
