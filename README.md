@@ -1,4 +1,4 @@
-# Red hat Application Migration Toolkit
+# Red Hat Application Migration Toolkit
 Red Hat Application Migration Toolkit is a collection of open 
 source tools that enables large-scale application migrations and modernizations.
 The tools provide support for each step of the migration process. 
