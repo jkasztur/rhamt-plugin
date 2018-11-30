@@ -179,7 +179,7 @@ public class RhamtBuilder extends Builder {
 		@Nonnull
 		@Override
 		public String getDisplayName() {
-			return "execute RHAMT";
+			return "Execute RHAMT";
 		}
 
 		public String getRhamtHome() {
