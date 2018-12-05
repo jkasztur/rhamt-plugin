@@ -105,8 +105,6 @@ public final class ConfigOptions {
 		}
 	}
 
-	// TODO(jkasztur): resolve 'custom' source and target
-	// TODO(jkasztur): resolve multiple source and target
 	private static void addSource(RhamtBuilder builder) {
 		setArrayParam(SourceOption.NAME, builder.getSource());
 	}

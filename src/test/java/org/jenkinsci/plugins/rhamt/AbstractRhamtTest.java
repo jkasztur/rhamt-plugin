@@ -13,6 +13,7 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import hudson.model.Cause;
+import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +23,14 @@ public abstract class AbstractRhamtTest {
 	public static String rhamtHome;
 	protected FreeStyleProject project;
 
+	public static final String TEST_PROJECT_NAME = "junitTestProject";
+
 	@Rule
 	public JenkinsRule jenkinsRule = new JenkinsRule();
 
 	@Before
 	public void createTestproject() throws IOException {
-		project = jenkinsRule.jenkins.createProject(FreeStyleProject.class, "junitTestproject");
+		project = jenkinsRule.jenkins.createProject(FreeStyleProject.class, TEST_PROJECT_NAME);
 	}
 
 	static {
@@ -40,10 +43,12 @@ public abstract class AbstractRhamtTest {
 		rhamtHome = properties.getProperty("rhamt.home");
 	}
 
-	protected void testBuildResult(Result expected) throws Exception {
+	protected FreeStyleBuild testBuildResult(Result expected) throws Exception {
 		project.scheduleBuild(new Cause.UserIdCause());
 		jenkinsRule.waitUntilNoActivityUpTo(new Long(TimeUnit.MINUTES.toMillis(5)).intValue());
-		assertEquals("Build should have been " + expected, expected, project.getLastBuild().getResult());
+		final FreeStyleBuild build = project.getLastBuild();
+		assertEquals("Build should have been " + expected, expected, build.getResult());
+		return build;
 	}
 
 	/**
@@ -72,5 +77,16 @@ public abstract class AbstractRhamtTest {
 		builder.setExportCsv(true);
 
 		return builder;
+	}
+
+	/**
+	 * Create post build step builder with default values.
+	 *
+	 * @return builder configured with jelly defaults
+	 */
+	public static RhamtPublisher getDefaultPublisher() {
+		final RhamtPublisher publisher = new RhamtPublisher();
+		publisher.setCsvRegex("rhamtReports/*.csv");
+		return publisher;
 	}
 }
