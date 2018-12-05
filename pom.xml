@@ -21,9 +21,8 @@
 
 		<version.windup>4.0.0.Final</version.windup>
 	</properties>
-
-	<name>RHAMT plugin</name>
-	<description>RHAMT integration with Jenkins</description>
+	<name>Red Hat Application Migration Toolkit Integration</name>
+	<description>Allows users to execute RHAMT and produce migration reports</description>
 
 	<developers>
 		<developer>
