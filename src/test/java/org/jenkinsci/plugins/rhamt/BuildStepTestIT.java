@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import hudson.model.Result;
 
-public class BasicTestIT extends AbstractRhamtTest {
+public class BuildStepTestIT extends AbstractRhamtTest {
 
 	@Test
 	public void failWithNullConfig() throws Exception {
