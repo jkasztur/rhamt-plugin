@@ -1,6 +1,7 @@
 package org.jenkinsci.plugins.rhamt;
 
 import org.jboss.windup.config.KeepWorkDirsOption;
+import org.jboss.windup.config.SkipReportsRenderingOption;
 import org.jboss.windup.exec.configuration.WindupConfiguration;
 import org.jboss.windup.exec.configuration.options.ExcludeTagsOption;
 import org.jboss.windup.exec.configuration.options.ExplodedAppInputOption;
@@ -158,6 +159,7 @@ public final class ConfigOptions {
 		setBoolParam(KeepWorkDirsOption.NAME, builder.isKeepWorkDirs());
 		setBoolParam(EnableCompatibleFilesReportOption.NAME, builder.isCompatibleFilesReport());
 		setBoolParam(EnableClassNotFoundAnalysisOption.NAME, builder.isClassNotFoundAnalysis());
+		setBoolParam(SkipReportsRenderingOption.NAME, builder.isSkipReports());
 	}
 
 	private static void addIncludedTags(RhamtBuilder builder) {

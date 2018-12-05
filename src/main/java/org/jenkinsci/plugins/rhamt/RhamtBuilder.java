@@ -89,6 +89,8 @@ public class RhamtBuilder extends Builder {
 	private String additionalClasspath;
 	@DataBoundSetter
 	private String userIgnorePath;
+	@DataBoundSetter
+	private boolean skipReports;
 
 	@DataBoundConstructor
 	public RhamtBuilder() {
@@ -125,7 +127,9 @@ public class RhamtBuilder extends Builder {
 
 			config.setGraphContext(graphContext);
 			windupProcessor.execute(config);
-			listener.getLogger().println("HTML Report is located at: " + config.getOutputDirectory().toString() + "/index.html");
+			if (!isSkipReports()) {
+				listener.getLogger().println("HTML Report is located at: " + config.getOutputDirectory().toString() + "/index.html");
+			}
 		} catch (ExecutionException e) {
 			e.printStackTrace();
 		} finally {
